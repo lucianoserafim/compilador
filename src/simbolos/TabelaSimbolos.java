@@ -1,4 +1,4 @@
-package tabela_simbolos;
+package simbolos;
 
 public class TabelaSimbolos {
 
