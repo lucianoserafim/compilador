@@ -72,7 +72,7 @@ public class TelaPrincipal extends JFrame {
 						+ "testefuncao(c);\n\n"
 						+ "SE(testefuncao();){\n\nINTEIRO idade;\n\n"
 						+ "idade = (1 + 2 + (a - b) - (5 * 3) / c);"
-						+ "\n\n}SENAO SE(FALSO){\n\nIMPRIME(idade);\n\n}\n\n"
+						+ "\n\n}SENAO SE(VERDADEIRO){\n\nIMPRIME(idade);\n\n}\n\n"
 						+ "ENQUANTO((a < b)){\n\nSE(FALSO){\n\nBOOLEANO f;\n\n}SENAO SE(a){\n\nf = FALSO;\n\n}\n\n}"
 						+ "testeproced(a,b);\n\n" + "FIM");
 
