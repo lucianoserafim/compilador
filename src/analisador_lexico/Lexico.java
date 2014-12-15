@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import excessao.Excecao;
+import excecao.Excecao;
 import simbolos.Type;
+import tokens.Numerico;
+import tokens.Palavra;
+import tokens.Tag;
+import tokens.Token;
 
 /**
  * Classe para análise lexica
@@ -68,7 +72,7 @@ public class Lexico {
 		/*
 		 * Código que será análisado
 		 */
-		this.codigoFonte = codigo + '$';
+		this.codigoFonte = codigo;
 
 		/*
 		 * Palavras reservadas
@@ -82,9 +86,8 @@ public class Lexico {
 		this.reservaPalavras(new Palavra("PARE", Tag.PARE, -1));
 		this.reservaPalavras(new Palavra("CONTINUE", Tag.CONTINUE, -1));
 		this.reservaPalavras(new Palavra("RETORNA", Tag.RETORNA, -1));
-		this.reservaPalavras(new Palavra("IDENTIFICADOR", Tag.IDENTIFICADOR, -1));
 		this.reservaPalavras(new Palavra("FUNCAO", Tag.FUNCAO, -1));
-		this.reservaPalavras(new Palavra("PROCED", Tag.PROCED, -1));
+		this.reservaPalavras(new Palavra("IDENTIFICADOR", Tag.IDENTIFICADOR, -1));
 		this.reservaPalavras(new Palavra("$", Tag.FINAL, -1));
 
 		this.reservaPalavras(Palavra.VERDADEIRO);
@@ -111,7 +114,7 @@ public class Lexico {
 	 */
 	public void reservaPalavras(Palavra p) {
 
-		palavrasReservadas.put(p.lexema, p);
+		palavrasReservadas.put(p.lex, p);
 
 	}
 
@@ -125,8 +128,6 @@ public class Lexico {
 			return palavrasReservadas.get(l);
 
 		} catch (Exception e) {
-
-			System.out.println("Erro ao retornar palavra.");
 
 			return null;
 
@@ -218,6 +219,8 @@ public class Lexico {
 
 		} catch (Exception e) {
 
+			lookAhead = '$';
+
 			return '$';
 		}
 
@@ -232,296 +235,326 @@ public class Lexico {
 
 		ex.erro = "";
 
-		// Percorre enquanto houver código
+		if (codigoFonte.equals("")) {
 
-		while (numeroCaractereAtual < codigoFonte.length()) {
+			ex.excecao("Análise léxica aceita.");
 
-			lerCaractereAtual();
+			return null;
 
-			if (caractereAtualLido == ' ' || caractereAtualLido == '\t') {
+		} else {
 
-				// Retira espaço em branco e tabulações
+			// Percorre enquanto houver código
 
-			} else if (caractereAtualLido == '\n') {
+			while (numeroCaractereAtual < codigoFonte.length()) {
 
-				// Conta o número de linhas
+				lerCaractereAtual();
 
-				linha++;
+				if (caractereAtualLido == ' ' || caractereAtualLido == '\t') {
 
-			} else if (isMaiuscula(caractereAtualLido)) {
+					// Retira espaço em branco e tabulações
 
-				// Verifica se todas são maiusculas
+				} else if (caractereAtualLido == '\n') {
 
-				lexema = caractereAtualLido + "";
+					// Conta o número de linhas
 
-				while (isMaiuscula(lookAhead)) {
+					linha++;
 
-					lexema = lexema + lookAhead;
+				} else if (isMaiuscula(caractereAtualLido)) {
 
-					lerCaractereAtual();
+					// Verifica se todas são maiusculas
+
+					lexema = caractereAtualLido + "";
+
+					while (isMaiuscula(lookAhead)) {
+
+						lexema = lexema + lookAhead;
+
+						lerCaractereAtual();
+
+					}
+
+					if (isMinuscula(lookAhead) || isNumerico(lookAhead)) {
+
+						ex.excecao(
+								"Erro léxico: A palavra esperada não é reservada : ",
+								lexema, linha);
+
+						return null;
+
+					} else if (isPalavraReservada(lexema)) {
+
+						Token t = getPalavraReservada(lexema);
+
+						t.setLinhaLocalizada(linha);
+
+						t.setNomeDoToken(lexema);
+
+						listaTokens.add(t);
+
+					} else {
+
+						ex.excecao("Erro léxico: A palavra não é reservada : ",
+								lexema, linha);
+
+						return null;
+
+					}
+
+				} else if (isMinuscula(caractereAtualLido)) {
+
+					// verifica se é um identificador
+
+					lexema = caractereAtualLido + "";
+
+					while (isMinuscula(lookAhead)) {
+
+						lexema = lexema + lookAhead;
+
+						lerCaractereAtual();
+
+					}
+
+					if (!(isMaiuscula(lookAhead)) || !(isNumerico(lookAhead))) {
+
+						Token t = getPalavraReservada("IDENTIFICADOR");
+
+						t.setLinhaLocalizada(linha);
+
+						t.setNomeDoToken(lexema);
+
+						listaTokens.add(t);
+
+					} else {
+
+						ex.excecao("Erro léxico: Era esperado um: ", lexema,
+								linha);
+
+						return null;
+
+					}
+
+				} else if (isNumerico(caractereAtualLido)) {
+
+					// Verifica se é um númerico
+
+					lexema = caractereAtualLido + "";
+
+					while (isNumerico(lookAhead)) {
+
+						lexema = lexema + lookAhead;
+
+						lerCaractereAtual();
+
+					}
+
+					if (isMaiuscula(lookAhead) || isMinuscula(lookAhead)) {
+
+						ex.excecao(
+								"Erro léxico: A palavra não é um númerico : ",
+								lexema, linha);
+
+						return null;
+
+					} else {
+
+						int v = Integer.parseInt(lexema);
+
+						Numerico n = new Numerico(v, linha);
+
+						listaTokens.add(n);
+
+					}
+
+				} else if (caractereAtualLido == '(') {
+
+					listaTokens.add(new Token('(', linha));
+
+				} else if (caractereAtualLido == ')') {
+
+					listaTokens.add(new Token(')', linha));
+
+				} else if (caractereAtualLido == '{') {
+
+					listaTokens.add(new Token('{', linha));
+
+				} else if (caractereAtualLido == '}') {
+
+					listaTokens.add(new Token('}', linha));
+
+				} else if (caractereAtualLido == ';') {
+
+					listaTokens.add(new Token(';', linha));
+
+				} else if (caractereAtualLido == ',') {
+
+					listaTokens.add(new Token(',', linha));
+
+				} else if (caractereAtualLido == '+') {
+
+					listaTokens.add(new Token('+', linha));
+
+				} else if (caractereAtualLido == '-') {
+
+					listaTokens.add(new Token('-', linha));
+
+				} else if (caractereAtualLido == '*') {
+
+					listaTokens.add(new Token('*', linha));
+
+				} else if (caractereAtualLido == '/') {
+
+					listaTokens.add(new Token('/', linha));
+
+				} else if (caractereAtualLido == '!') {
+
+					if (lookAhead == '=') {
+
+						numeroCaractereAtual++;
+
+						Token t = getPalavraReservada("!=");
+
+						t.setLinhaLocalizada(linha);
+
+						//t.setNomeDoToken("!=");
+
+						listaTokens.add(t);
+
+					} else {
+
+						ex.excecao("Erro léxico: Era esperado o simbolo : ",
+								"=", linha);
+
+						return null;
+
+					}
+
+				} else if (caractereAtualLido == '<') {
+
+					Token t;
+
+					if (lookAhead == ' ') {
+
+						numeroCaractereAtual++;
+
+						t = getPalavraReservada("<");
+
+						t.setLinhaLocalizada(linha);
+
+						t.setNomeDoToken("<");
+
+						listaTokens.add(t);
+
+					} else if (lookAhead == '=') {
+
+						numeroCaractereAtual++;
+
+						t = getPalavraReservada("<=");
+
+						t.setLinhaLocalizada(linha);
+
+						t.setNomeDoToken("<=");
+
+						listaTokens.add(t);
+
+					} else {
+
+						ex.excecao(
+								"Erro léxico: Era esperado o simbolo ou um espaço em branco : ",
+								"=", linha);
+
+						return null;
+
+					}
+
+				} else if (caractereAtualLido == '>') {
+
+					Token t;
+
+					if (lookAhead == ' ') {
+
+						numeroCaractereAtual++;
+
+						t = getPalavraReservada(">");
+
+						t.setLinhaLocalizada(linha);
+
+						t.setNomeDoToken(">");
+
+						listaTokens.add(t);
+
+					} else if (lookAhead == '=') {
+
+						numeroCaractereAtual++;
+
+						t = getPalavraReservada(">=");
+
+						t.setLinhaLocalizada(linha);
+
+						t.setNomeDoToken("=>");
+
+						listaTokens.add(t);
+
+					} else {
+
+						ex.excecao(
+								"Erro léxico: Era esperado o simbolo ou espaço em branco : ",
+								"=", linha);
+
+						return null;
+
+					}
+
+				} else if (caractereAtualLido == '=') {
+
+					Token t;
+
+					if (lookAhead == ' ') {
+
+						numeroCaractereAtual++;
+
+						t = getPalavraReservada("=");
+
+						t.setLinhaLocalizada(linha);
+
+						t.setNomeDoToken("=");
+
+						listaTokens.add(t);
+
+					} else if (lookAhead == '=') {
+
+						numeroCaractereAtual++;
+
+						t = getPalavraReservada("==");
+
+						t.setLinhaLocalizada(linha);
+
+						listaTokens.add(t);
+
+					} else {
+
+						ex.excecao(
+								"Erro léxico: Era esperado o simbolo ou espaço em branco : ",
+								"=", linha);
+
+						return null;
+
+					}
 
 				}
 
-				if (isMinuscula(lookAhead) || isNumerico(lookAhead)) {
+			}/* while (numeroCaractereAtual < codigoFonte.length()) */
 
-					ex.excecao(" A palavra esperada não é reservada : ",
-							lexema, linha);
+		}
 
-					return null;
+		Token t;
 
-				} else if (isPalavraReservada(lexema)) {
+		t = getPalavraReservada("$");
 
-					Token t = getPalavraReservada(lexema);
-
-					t.setLinhaLocalizada(linha);
-
-					t.setNomeDoToken(lexema);
-
-					listaTokens.add(t);
-
-				} else {
-
-					ex.excecao(" A palavra não é reservada : ", lexema, linha);
-
-					return null;
-
-				}
-
-			} else if (isMinuscula(caractereAtualLido)) {
-
-				// verifica se é um identificador
-
-				lexema = caractereAtualLido + "";
-
-				while (isMinuscula(lookAhead)) {
-
-					lexema = lexema + lookAhead;
-
-					lerCaractereAtual();
-
-				}
-
-				if (!(isMaiuscula(lookAhead)) || !(isNumerico(lookAhead))) {
-
-					Token t = getPalavraReservada("IDENTIFICADOR");
-
-					t.setLinhaLocalizada(linha);
-
-					t.setNomeDoToken(lexema);
-
-					listaTokens.add(t);
-
-				} else {
-
-					ex.excecao("Erro léxico: Era esperado um: ", lexema,
-							linha);
-
-					return null;
-
-				}
-
-			} else if (isNumerico(caractereAtualLido)) {
-
-				// Verifica se é um númerico
-
-				lexema = caractereAtualLido + "";
-
-				while (isNumerico(lookAhead)) {
-
-					lexema = lexema + lookAhead;
-
-					lerCaractereAtual();
-
-				}
-
-				if (isMaiuscula(lookAhead) || isMinuscula(lookAhead)) {
-
-					ex.excecao(" A palavra não é um númerico : ", lexema, linha);
-
-					return null;
-
-				} else {
-
-					int v = Integer.parseInt(lexema);
-
-					Numerico n = new Numerico(v, linha);
-
-					listaTokens.add(n);
-
-				}
-
-			} else if (caractereAtualLido == '(') {
-
-				listaTokens.add(new Token('(', linha));
-
-			} else if (caractereAtualLido == ')') {
-
-				listaTokens.add(new Token(')', linha));
-
-			} else if (caractereAtualLido == '{') {
-
-				listaTokens.add(new Token('{', linha));
-
-			} else if (caractereAtualLido == '}') {
-
-				listaTokens.add(new Token('}', linha));
-
-			} else if (caractereAtualLido == ';') {
-
-				listaTokens.add(new Token(';', linha));
-
-			} else if (caractereAtualLido == ',') {
-
-				listaTokens.add(new Token(',', linha));
-
-			} else if (caractereAtualLido == '+') {
-
-				listaTokens.add(new Token('+', linha));
-
-			} else if (caractereAtualLido == '-') {
-
-				listaTokens.add(new Token('-', linha));
-
-			} else if (caractereAtualLido == '*') {
-
-				listaTokens.add(new Token('*', linha));
-
-			} else if (caractereAtualLido == '/') {
-
-				listaTokens.add(new Token('/', linha));
-
-			} else if (caractereAtualLido == '!') {
-
-				if (lookAhead == '=') {
-
-					numeroCaractereAtual++;
-
-					Token t = getPalavraReservada("!=");
-					
-					t.setLinhaLocalizada(linha);
-
-					listaTokens.add(t);
-
-				} else {
-
-					ex.excecao("Era esperado o simbolo : ", "=", linha);
-
-					return null;
-
-				}
-
-			} else if (caractereAtualLido == '<') {
-
-				Token t;
-
-				if (lookAhead == ' ') {
-
-					numeroCaractereAtual++;
-
-					t = getPalavraReservada("<");
-
-					listaTokens.add(t);
-
-				} else if (lookAhead == '=') {
-
-					numeroCaractereAtual++;
-
-					t = getPalavraReservada("<=");
-					
-					t.setLinhaLocalizada(linha);
-
-					listaTokens.add(t);
-
-				} else {
-
-					ex.excecao(
-							" Era esperado o simbolo ou um espaço em branco : ",
-							"=", linha);
-
-					return null;
-
-				}
-
-			} else if (caractereAtualLido == '>') {
-
-				Token t;
-
-				if (lookAhead == ' ') {
-
-					numeroCaractereAtual++;
-
-					t = getPalavraReservada(">");
-					
-					t.setLinhaLocalizada(linha);
-
-					listaTokens.add(t);
-
-				} else if (lookAhead == '=') {
-
-					numeroCaractereAtual++;
-
-					t = getPalavraReservada(">=");
-					
-					t.setLinhaLocalizada(linha);
-
-					listaTokens.add(t);
-
-				} else {
-
-					ex.excecao(
-							" Era esperado o simbolo ou espaço em branco : ",
-							"=", linha);
-
-					return null;
-
-				}
-
-			} else if (caractereAtualLido == '=') {
-
-				Token t;
-
-				if (lookAhead == ' ') {
-
-					numeroCaractereAtual++;
-
-					t = getPalavraReservada("=");
-					
-					t.setLinhaLocalizada(linha);
-
-					listaTokens.add(t);
-
-				} else if (lookAhead == '=') {
-
-					numeroCaractereAtual++;
-
-					t = getPalavraReservada("==");
-					
-					t.setLinhaLocalizada(linha);
-
-					listaTokens.add(t);
-
-				} else {
-
-					ex.excecao(
-							" Era esperado o simbolo ou espaço em branco : ",
-							"=", linha);
-
-					return null;
-
-				}
-
-			} else {
-
-				Token t = getPalavraReservada("$");
-
-				listaTokens.add(t);
-
-			}
-
-		}/* while (numeroCaractereAtual < codigoFonte.length()) */
+		listaTokens.add(t);
 
 		ex.excecao("Análise léxica aceita.");
 
 		return listaTokens;
+
 	}
 }

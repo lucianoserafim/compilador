@@ -1,4 +1,5 @@
-package analisador_lexico;
+package tokens;
+
 
 /**
  * Classe que gerencia lexemas para palavras reservadas, identificadores e
@@ -8,13 +9,13 @@ package analisador_lexico;
  */
 public class Palavra extends Token {
 	
-	String lexema = "";
+	public String lex = "";
 
 	public Palavra(String l, int tag, int linha) {
 
 		super(tag, linha);
 		
-		this.lexema = l;
+		this.lex = l;
 
 	}
 	
@@ -22,7 +23,7 @@ public class Palavra extends Token {
 
 		super(tag, -1);
 		
-		this.lexema = l;
+		this.lex = l;
 
 	}
 	
@@ -52,7 +53,7 @@ public class Palavra extends Token {
 
 	public String toString() {
 
-		return lexema;
+		return lex;
 
 	}
 

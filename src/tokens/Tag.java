@@ -1,4 +1,4 @@
-package analisador_lexico;
+package tokens;
 
 /**
  * Classe que define contantes inteiras para os tokens. Valores maior que 255
@@ -29,14 +29,12 @@ public class Tag {
 	
 	public final static int NUMERICO = 277;
 	
-	public final static int FUNCAO = 278;
+	public final static int IDENTIFICADOR = 278;
 	
-	public final static int IDENTIFICADOR = 279;
+	public final static int ATRIBUICAO = 279;
 	
-	public final static int ATRIBUICAO = 280;
+	public final static int FINAL = 280;
 	
-	public final static int PROCED = 280;
-	
-	public final static int FINAL = 281;
+	public final static int FUNCAO = 281;
 
 }

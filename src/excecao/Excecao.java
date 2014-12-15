@@ -1,4 +1,4 @@
-package excessao;
+package excecao;
 
 public class Excecao {
 

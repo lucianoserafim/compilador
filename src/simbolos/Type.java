@@ -1,7 +1,7 @@
 package simbolos;
 
-import analisador_lexico.Palavra;
-import analisador_lexico.Tag;
+import tokens.Palavra;
+import tokens.Tag;
 
 public class Type extends Palavra {
 	

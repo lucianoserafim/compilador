@@ -1,4 +1,5 @@
-package analisador_lexico;
+package tokens;
+
 
 /**
  * Classe que define tokens numericos
