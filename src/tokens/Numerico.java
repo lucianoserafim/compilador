@@ -4,7 +4,7 @@ package tokens;
 /**
  * Classe que define tokens numericos
  * 
- * @author luciano
+ * @author luciano serafim
  */
 public class Numerico extends Token {
 
