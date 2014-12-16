@@ -137,29 +137,4 @@ public abstract class ASintatico {
 
 	}
 
-	protected boolean operador() {
-
-		if (comparaLexema(Tag.MENOR_Q) || comparaLexema(Tag.MAIOR_Q)
-				|| comparaLexema(Tag.MENOR_IGUAL) || comparaLexema(Tag.IGUAL)
-				|| comparaLexema(Tag.DIFERENTE)) {
-
-			System.out.println(listaTokens.get(indiceLista).getNomeDoToken());
-
-			return true;
-
-		} else {
-
-			numeroErro++;
-
-			ex.excecao(
-					"Erro sintático: ",
-					"Era esperado um operador lógico depois do token "
-							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
-					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
-			return false;
-
-		}
-
-	}
-
 }

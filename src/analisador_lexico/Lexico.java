@@ -69,6 +69,8 @@ public class Lexico {
 	 */
 	public Lexico(String codigo) {
 
+		listaTokens.clear();
+
 		/*
 		 * Código que será análisado
 		 */
@@ -160,9 +162,11 @@ public class Lexico {
 
 			return true;
 
-		}
+		} else {
 
-		return false;
+			return false;
+
+		}
 
 	}
 
@@ -314,7 +318,14 @@ public class Lexico {
 
 					}
 
-					if (!(isMaiuscula(lookAhead)) || !(isNumerico(lookAhead))) {
+					if (isMaiuscula(lookAhead) || isNumerico(lookAhead)) {
+
+						ex.excecao("Erro léxico: Era esperado um: ", lexema,
+								linha);
+
+						return null;
+
+					} else {
 
 						Token t = getPalavraReservada("IDENTIFICADOR");
 
@@ -323,13 +334,6 @@ public class Lexico {
 						t.setNomeDoToken(lexema);
 
 						listaTokens.add(t);
-
-					} else {
-
-						ex.excecao("Erro léxico: Era esperado um: ", lexema,
-								linha);
-
-						return null;
 
 					}
 
@@ -415,7 +419,7 @@ public class Lexico {
 
 						t.setLinhaLocalizada(linha);
 
-						//t.setNomeDoToken("!=");
+						t.setNomeDoToken("!=");
 
 						listaTokens.add(t);
 
@@ -550,9 +554,23 @@ public class Lexico {
 
 		t = getPalavraReservada("$");
 
+		t.setNomeDoToken("FINAL");
+
+		t.setLinhaLocalizada(linha);
+
 		listaTokens.add(t);
 
 		ex.excecao("Análise léxica aceita.");
+
+		int n = 0;
+
+		while (n < listaTokens.size()) {
+
+			System.out.println(listaTokens.get(n).getNomeDoToken());
+
+			n++;
+
+		}
 
 		return listaTokens;
 

@@ -25,11 +25,14 @@ public class Token {
 	public Token(int t, int l) {
 
 		this.tag = t;
+		
 		setLinhaLocalizada(l);
 		
 		if(t < 256){
 			
 			this.nomeDoToken = (char)t + "";
+			
+			System.out.println("Aqui" + nomeDoToken);
 			
 		}
 
@@ -48,6 +51,9 @@ public class Token {
 	}
 
 	public void setNomeDoToken(String nomeDoToken) {
+
+		
+		System.out.println(nomeDoToken);
 		this.nomeDoToken = nomeDoToken;
 	}
 
