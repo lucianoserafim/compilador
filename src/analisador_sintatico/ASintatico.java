@@ -3,9 +3,8 @@ package analisador_sintatico;
 import java.util.List;
 import java.util.Stack;
 
-import excecao.Excecao;
-import tokens.Tag;
 import tokens.Token;
+import excecao.Excecao;
 
 public abstract class ASintatico {
 

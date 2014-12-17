@@ -32,8 +32,6 @@ public class Token {
 			
 			this.nomeDoToken = (char)t + "";
 			
-			System.out.println("Aqui" + nomeDoToken);
-			
 		}
 
 	}
@@ -51,9 +49,6 @@ public class Token {
 	}
 
 	public void setNomeDoToken(String nomeDoToken) {
-
-		
-		System.out.println(nomeDoToken);
 		this.nomeDoToken = nomeDoToken;
 	}
 
@@ -63,6 +58,12 @@ public class Token {
 
 	public String toString() {
 
+		if(this.tag > 255){
+			
+			return this.getNomeDoToken();
+			
+		}
+		
 		return "" + (char) tag;
 
 	}

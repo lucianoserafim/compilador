@@ -69,7 +69,7 @@ public class Lexico {
 	 */
 	public Lexico(String codigo) {
 
-		listaTokens.clear();
+		//listaTokens.clear();
 
 		/*
 		 * Código que será análisado
@@ -287,9 +287,7 @@ public class Lexico {
 
 					} else if (isPalavraReservada(lexema)) {
 
-						Token t = getPalavraReservada(lexema);
-
-						t.setLinhaLocalizada(linha);
+						Token t = new Token(getPalavraReservada(lexema).tag, linha);
 
 						t.setNomeDoToken(lexema);
 
@@ -327,9 +325,7 @@ public class Lexico {
 
 					} else {
 
-						Token t = getPalavraReservada("IDENTIFICADOR");
-
-						t.setLinhaLocalizada(linha);
+						Token t = new Token(Tag.IDENTIFICADOR, linha);
 
 						t.setNomeDoToken(lexema);
 
@@ -434,15 +430,11 @@ public class Lexico {
 
 				} else if (caractereAtualLido == '<') {
 
-					Token t;
-
 					if (lookAhead == ' ') {
 
 						numeroCaractereAtual++;
 
-						t = getPalavraReservada("<");
-
-						t.setLinhaLocalizada(linha);
+						Token t = new Token(getPalavraReservada("<").tag, linha);
 
 						t.setNomeDoToken("<");
 
@@ -452,9 +444,7 @@ public class Lexico {
 
 						numeroCaractereAtual++;
 
-						t = getPalavraReservada("<=");
-
-						t.setLinhaLocalizada(linha);
+						Token t = new Token(getPalavraReservada("<=").tag, linha);
 
 						t.setNomeDoToken("<=");
 
@@ -472,15 +462,11 @@ public class Lexico {
 
 				} else if (caractereAtualLido == '>') {
 
-					Token t;
-
 					if (lookAhead == ' ') {
 
 						numeroCaractereAtual++;
 
-						t = getPalavraReservada(">");
-
-						t.setLinhaLocalizada(linha);
+						Token t = new Token(getPalavraReservada(">").tag, linha);
 
 						t.setNomeDoToken(">");
 
@@ -490,9 +476,7 @@ public class Lexico {
 
 						numeroCaractereAtual++;
 
-						t = getPalavraReservada(">=");
-
-						t.setLinhaLocalizada(linha);
+						Token t = new Token(getPalavraReservada(">=").tag, linha);
 
 						t.setNomeDoToken("=>");
 
@@ -510,15 +494,11 @@ public class Lexico {
 
 				} else if (caractereAtualLido == '=') {
 
-					Token t;
-
 					if (lookAhead == ' ') {
 
 						numeroCaractereAtual++;
 
-						t = getPalavraReservada("=");
-
-						t.setLinhaLocalizada(linha);
+						Token t = new Token(getPalavraReservada("=").tag, linha);
 
 						t.setNomeDoToken("=");
 
@@ -528,9 +508,7 @@ public class Lexico {
 
 						numeroCaractereAtual++;
 
-						t = getPalavraReservada("==");
-
-						t.setLinhaLocalizada(linha);
+						Token t = new Token(getPalavraReservada("==").tag, linha);
 
 						listaTokens.add(t);
 
@@ -550,21 +528,17 @@ public class Lexico {
 
 		}
 
-		Token t;
-
-		t = getPalavraReservada("$");
-
-		t.setNomeDoToken("FINAL");
-
-		t.setLinhaLocalizada(linha);
+		Token t = new Token(getPalavraReservada("$").tag, linha);
 
 		listaTokens.add(t);
 
 		ex.excecao("Análise léxica aceita.");
+		
+		System.out.println("LÉXICA : \n");
 
 		int n = 0;
 
-		while (n < listaTokens.size()) {
+		while (n < listaTokens.size() - 1) {
 
 			System.out.println(listaTokens.get(n).getNomeDoToken());
 

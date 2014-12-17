@@ -47,7 +47,7 @@ public class Sintatico extends ASintatico {
 
 		while (dpf) {
 
-			dpf = declaracaoProcedFunc();
+			dpf = declaracaoVarProcedFunc();
 
 		}
 
@@ -70,6 +70,19 @@ public class Sintatico extends ASintatico {
 					if (comparaLexema(Tag.FIM)) {
 
 						consomeToken();
+
+						System.out.println("SINTÁTICA : \n");
+
+						int n = 0;
+
+						while (n < listaTokens.size() - 1) {
+
+							System.out.println(listaTokens.get(n)
+									.getNomeDoToken());
+
+							n++;
+
+						}
 
 						finalizarPrograma();
 
@@ -123,7 +136,7 @@ public class Sintatico extends ASintatico {
 	/*
 	 * Produção <declara_proced> || <declara_func>
 	 */
-	private boolean declaracaoProcedFunc() {
+	private boolean declaracaoVarProcedFunc() {
 
 		boolean dpf = true;
 
@@ -243,6 +256,10 @@ public class Sintatico extends ASintatico {
 							return;
 
 						}
+
+					} else {
+
+						return;
 
 					}
 
@@ -381,18 +398,6 @@ public class Sintatico extends ASintatico {
 
 												} else {
 
-													numeroErro++;
-
-													ex.excecao(
-															"Erro sintático: ",
-															"Era esperado um valor de retorno depois do token "
-																	+ listaTokens
-																			.get(indiceLista - 1)
-																			.getNomeDoToken(),
-															(listaTokens
-																	.get(indiceLista - 1)
-																	.getLinhaLocalizada()));
-
 													return;
 
 												}
@@ -432,6 +437,10 @@ public class Sintatico extends ASintatico {
 											return;
 
 										}
+
+									} else {
+
+										return;
 
 									}
 
@@ -489,6 +498,10 @@ public class Sintatico extends ASintatico {
 								return;
 
 							}
+
+						} else {
+
+							return;
 
 						}
 
@@ -704,6 +717,12 @@ public class Sintatico extends ASintatico {
 		} else {
 
 			numeroErro++;
+
+			ex.excecao(
+					"Erro sintático: ",
+					"Era esperado um valor de retorno depois do token "
+							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
+					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
 
 			return;
 
@@ -959,9 +978,41 @@ public class Sintatico extends ASintatico {
 
 		} else if (comparaLexema(Tag.SE)) {
 
+			condicional();
+
 		} else if (comparaLexema(Tag.ENQUANTO)) {
 
+			laco();
+
 		} else if (comparaLexema(Tag.IMPRIME)) {
+
+			imprime();
+
+		} else if (comparaLexema('(')) {
+
+			numeroErro++;
+
+			ex.excecao("Erro sintático: ",
+					"Era esperado um identificador antes do token "
+							+ listaTokens.get(indiceLista).getNomeDoToken(),
+					(listaTokens.get(indiceLista).getLinhaLocalizada()));
+
+			com = false;
+
+		}else if(comparaLexema(Tag.ATRIBUICAO)){
+			
+			numeroErro++;
+
+			ex.excecao("Erro sintático: ",
+					"Era esperado um identificador antes do token "
+							+ listaTokens.get(indiceLista).getNomeDoToken(),
+					(listaTokens.get(indiceLista).getLinhaLocalizada()));
+
+			com = false;
+			
+		} else if (comparaLexema(Tag.FIM)) {
+
+			com = false;
 
 		} else {
 
@@ -970,6 +1021,455 @@ public class Sintatico extends ASintatico {
 		}
 
 		return com;
+
+	}
+
+	private void imprime() {
+
+		if (comparaLexema(Tag.IMPRIME)) {
+
+			consomeToken();
+
+			if (comparaLexema('(')) {
+
+				consomeToken();
+
+				valor();
+
+				if (numeroErro == 0) {
+
+					if (comparaLexema(')')) {
+
+						consomeToken();
+
+						if (comparaLexema(';')) {
+
+							consomeToken();
+
+						} else {
+
+							numeroErro++;
+
+							ex.excecao("Erro sintático: ",
+									"Era esperado um ; depois do token "
+											+ listaTokens.get(indiceLista - 1)
+													.getNomeDoToken(),
+									(listaTokens.get(indiceLista - 1)
+											.getLinhaLocalizada()));
+
+							return;
+
+						}
+
+					} else {
+
+						numeroErro++;
+
+						ex.excecao("Erro sintático: ",
+								"Era esperado um ) depois do token "
+										+ listaTokens.get(indiceLista - 1)
+												.getNomeDoToken(), (listaTokens
+										.get(indiceLista - 1)
+										.getLinhaLocalizada()));
+
+						return;
+
+					}
+
+				} else {
+
+					return;
+
+				}
+
+			} else {
+
+				numeroErro++;
+
+				ex.excecao(
+						"Erro sintático: ",
+						"Era esperado um ( depois do token "
+								+ listaTokens.get(indiceLista - 1)
+										.getNomeDoToken(),
+						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+
+				return;
+
+			}
+
+		} else {
+
+		}
+
+	}
+
+	private void laco() {
+
+		if (comparaLexema(Tag.ENQUANTO)) {
+
+			consomeToken();
+
+			if (comparaLexema('(')) {
+
+				consomeToken();
+
+				condicao();
+
+				if (numeroErro == 0) {
+
+					if (comparaLexema(')')) {
+
+						consomeToken();
+
+						if (comparaLexema('{')) {
+
+							consomeToken();
+
+							boolean esc = true;
+
+							while (esc) {
+
+								esc = escopo();
+
+							}
+
+							if (numeroErro == 0) {
+
+								if (comparaLexema('}')) {
+
+									consomeToken();
+
+								} else {
+
+									numeroErro++;
+
+									ex.excecao(
+											"Erro sintático: ",
+											"Era esperado o simbolo } depois do token "
+													+ listaTokens.get(
+															indiceLista - 1)
+															.getNomeDoToken(),
+											(listaTokens.get(indiceLista - 1)
+													.getLinhaLocalizada()));
+
+									return;
+
+								}
+
+							} else {
+
+								return;
+
+							}
+
+						} else {
+
+							numeroErro++;
+
+							ex.excecao("Erro sintático: ",
+									"Era esperado o simbolo { depois do token "
+											+ listaTokens.get(indiceLista - 1)
+													.getNomeDoToken(),
+									(listaTokens.get(indiceLista - 1)
+											.getLinhaLocalizada()));
+
+							return;
+
+						}
+
+					} else {
+
+						numeroErro++;
+
+						ex.excecao("Erro sintático: ",
+								"Era esperado o simbolo ) depois do token "
+										+ listaTokens.get(indiceLista - 1)
+												.getNomeDoToken(), (listaTokens
+										.get(indiceLista - 1)
+										.getLinhaLocalizada()));
+
+						return;
+
+					}
+
+				} else {
+
+					return;
+
+				}
+
+			} else {
+
+				numeroErro++;
+
+				ex.excecao("Erro sintático: ",
+						"Era esperado o simbolo ( depois do token "
+								+ listaTokens.get(indiceLista - 1)
+										.getNomeDoToken(),
+						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+
+				return;
+
+			}
+
+		} else {
+
+		}
+	}
+
+	private boolean escopo() {
+
+		boolean e = true;
+
+		if (comparaLexema(Tag.SE)) {
+
+			e = condicionalEspecial();
+
+		} else {
+
+			e = comeco();
+
+		}
+
+		return e;
+	}
+
+	private boolean condicionalEspecial() {
+
+		boolean c = true;
+
+		if (comparaLexema(Tag.SE)) {
+
+			consomeToken();
+
+			if (comparaLexema('(')) {
+
+				consomeToken();
+
+				condicao();
+
+				if (numeroErro == 0) {
+
+					if (comparaLexema(')')) {
+
+						consomeToken();
+
+						if (comparaLexema('{')) {
+
+							consomeToken();
+
+							boolean esc = true;
+
+							while (esc) {
+
+								esc = escopo();
+
+							}
+
+							if (numeroErro == 0) {
+
+								if (comparaLexema(Tag.PARE)
+										|| comparaLexema(Tag.CONTINUE)) {
+
+									consomeToken();
+
+									if (comparaLexema(';')) {
+
+										consomeToken();
+
+									} else {
+
+										numeroErro++;
+
+										ex.excecao(
+												"Erro sintático: ",
+												"Era esperado o simbolo ; depois do token "
+														+ listaTokens
+																.get(indiceLista - 1)
+																.getNomeDoToken(),
+												(listaTokens
+														.get(indiceLista - 1)
+														.getLinhaLocalizada()));
+
+										c = false;
+
+									}
+
+								}
+
+							}
+
+							if (comparaLexema('}')) {
+
+								consomeToken();
+
+								senaoEspecial();
+
+							} else {
+
+								numeroErro++;
+
+								ex.excecao(
+										"Erro sintático: ",
+										"Era esperado o simbolo } depois do token "
+												+ listaTokens.get(
+														indiceLista - 1)
+														.getNomeDoToken(),
+										(listaTokens.get(indiceLista - 1)
+												.getLinhaLocalizada()));
+
+								c = false;
+
+							}
+
+						} else {
+
+							numeroErro++;
+
+							ex.excecao("Erro sintático: ",
+									"Era esperado o simbolo { depois do token "
+											+ listaTokens.get(indiceLista - 1)
+													.getNomeDoToken(),
+									(listaTokens.get(indiceLista - 1)
+											.getLinhaLocalizada()));
+
+							c = false;
+
+						}
+
+					} else {
+
+						numeroErro++;
+
+						ex.excecao("Erro sintático: ",
+								"Era esperado o simbolo ) depois do token "
+										+ listaTokens.get(indiceLista - 1)
+												.getNomeDoToken(), (listaTokens
+										.get(indiceLista - 1)
+										.getLinhaLocalizada()));
+
+						c = false;
+
+					}
+
+				} else {
+
+					c = false;
+
+				}
+
+			} else {
+
+				numeroErro++;
+
+				ex.excecao("Erro sintático: ",
+						"Era esperado o simbolo ( depois do token "
+								+ listaTokens.get(indiceLista - 1)
+										.getNomeDoToken(),
+						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+
+				c = false;
+
+			}
+
+		}
+
+		return c;
+	}
+
+	private void senaoEspecial() {
+
+		if (comparaLexema(Tag.SENAO)) {
+
+			consomeToken();
+
+			if (comparaLexema('{')) {
+
+				consomeToken();
+
+				boolean c = true;
+
+				while (c) {
+
+					c = comeco();
+
+				}
+
+				if (numeroErro == 0) {
+
+					if (comparaLexema(Tag.PARE) || comparaLexema(Tag.CONTINUE)) {
+
+						consomeToken();
+
+						if (comparaLexema(';')) {
+
+							consomeToken();
+
+						} else {
+
+							numeroErro++;
+
+							ex.excecao("Erro sintático: ",
+									"Era esperado o simbolo ; depois do token "
+											+ listaTokens.get(indiceLista - 1)
+													.getNomeDoToken(),
+									(listaTokens.get(indiceLista - 1)
+											.getLinhaLocalizada()));
+
+							return;
+
+						}
+
+					}
+
+				} else {
+
+					return;
+
+				}
+
+				if (comparaLexema('}')) {
+
+					consomeToken();
+
+				} else {
+
+					numeroErro++;
+
+					ex.excecao("Erro sintático: ",
+							"Era esperado o simbolo } depois do token "
+									+ listaTokens.get(indiceLista - 1)
+											.getNomeDoToken(), (listaTokens
+									.get(indiceLista - 1).getLinhaLocalizada()));
+
+					return;
+
+				}
+
+			} else if (comparaLexema(Tag.SE)) {
+
+				condicionalEspecial();
+
+			} else {
+
+				numeroErro++;
+
+				ex.excecao("Erro sintático: ",
+						"Era esperado o simbolo { depois do token "
+								+ listaTokens.get(indiceLista - 1)
+										.getNomeDoToken(),
+						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+
+				return;
+
+			}
+
+		} else {
+
+			return;
+
+		}
+
 	}
 
 	private void declaraVar() {
@@ -1016,6 +1516,8 @@ public class Sintatico extends ASintatico {
 
 		} else {
 
+			return;
+
 		}
 
 	}
@@ -1052,11 +1554,13 @@ public class Sintatico extends ASintatico {
 
 			}
 
+		} else {
+
 		}
 
 	}
 
-	private boolean chamaFuncaoProced() {
+	private void chamaFuncaoProced() {
 
 		if (comparaLexema(Tag.IDENTIFICADOR)) {
 
@@ -1078,8 +1582,6 @@ public class Sintatico extends ASintatico {
 
 							consomeToken();
 
-							return true;
-
 						} else {
 
 							numeroErro++;
@@ -1091,7 +1593,7 @@ public class Sintatico extends ASintatico {
 									(listaTokens.get(indiceLista - 1)
 											.getLinhaLocalizada()));
 
-							return false;
+							return;
 
 						}
 
@@ -1106,7 +1608,7 @@ public class Sintatico extends ASintatico {
 										.get(indiceLista - 1)
 										.getLinhaLocalizada()));
 
-						return false;
+						return;
 
 					}
 
@@ -1114,9 +1616,9 @@ public class Sintatico extends ASintatico {
 
 			}
 
-		}
+		} else {
 
-		return true;
+		}
 
 	}
 
@@ -1243,14 +1745,6 @@ public class Sintatico extends ASintatico {
 
 				} else {
 
-					numeroErro++;
-
-					ex.excecao("Erro sintático: ",
-							"Era esperado um valor depois do token "
-									+ listaTokens.get(indiceLista - 1)
-											.getNomeDoToken(), (listaTokens
-									.get(indiceLista - 1).getLinhaLocalizada()));
-
 					return;
 
 				}
@@ -1268,6 +1762,357 @@ public class Sintatico extends ASintatico {
 				return;
 
 			}
+
+		} else {
+
+		}
+
+	}
+
+	private void condicional() {
+
+		if (comparaLexema(Tag.SE)) {
+
+			consomeToken();
+
+			if (comparaLexema('(')) {
+
+				consomeToken();
+
+				condicao();
+
+				if (numeroErro == 0) {
+
+					if (comparaLexema(')')) {
+
+						consomeToken();
+
+						if (comparaLexema('{')) {
+
+							consomeToken();
+
+							boolean com = true;
+
+							while (com) {
+
+								com = comeco();
+
+							}
+
+							if (numeroErro == 0) {
+
+								if (comparaLexema('}')) {
+
+									consomeToken();
+
+									senao();
+
+								} else {
+
+									numeroErro++;
+
+									ex.excecao(
+											"Erro sintático: ",
+											"Era esperado o simbolo } depois do token "
+													+ listaTokens.get(
+															indiceLista - 1)
+															.getNomeDoToken(),
+											(listaTokens.get(indiceLista - 1)
+													.getLinhaLocalizada()));
+
+									return;
+
+								}
+
+							}
+
+						} else {
+
+							numeroErro++;
+
+							ex.excecao("Erro sintático: ",
+									"Era esperado o simbolo { depois do token "
+											+ listaTokens.get(indiceLista - 1)
+													.getNomeDoToken(),
+									(listaTokens.get(indiceLista - 1)
+											.getLinhaLocalizada()));
+
+							return;
+
+						}
+
+					} else {
+
+						numeroErro++;
+
+						ex.excecao("Erro sintático: ",
+								"Era esperado o simbolo ) depois do token "
+										+ listaTokens.get(indiceLista - 1)
+												.getNomeDoToken(), (listaTokens
+										.get(indiceLista - 1)
+										.getLinhaLocalizada()));
+
+						return;
+
+					}
+
+				} else {
+
+					return;
+
+				}
+
+			} else {
+
+				numeroErro++;
+
+				ex.excecao("Erro sintático: ",
+						"Era esperado o simbolo ( depois do token "
+								+ listaTokens.get(indiceLista - 1)
+										.getNomeDoToken(),
+						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+
+				return;
+
+			}
+
+		} else {
+
+		}
+
+	}
+
+	private void condicao() {
+
+		if (comparaLexema(Tag.NUMERICO) || comparaLexema(Tag.VERDADEIRO)
+				|| comparaLexema(Tag.FALSO)) {
+
+			consomeToken();
+
+		} else if (comparaLexema(Tag.IDENTIFICADOR)) {
+
+			indiceLista++;
+
+			if (comparaLexema('(')) {
+
+				indiceLista--;
+
+				chamaFuncaoProced();
+
+				if (numeroErro == 0) {
+
+				} else {
+
+					numeroErro++;
+
+					ex.excecao("Erro sintático: ",
+							"Era esperado uma condição depois do token "
+									+ listaTokens.get(indiceLista - 1)
+											.getNomeDoToken(), (listaTokens
+									.get(indiceLista - 1).getLinhaLocalizada()));
+
+					return;
+
+				}
+
+			} else {
+
+			}
+
+		} else if (comparaLexema('(')) {
+
+			expressaoLogica();
+
+			if (numeroErro == 0) {
+
+			} else {
+
+				numeroErro++;
+
+				ex.excecao("Erro sintático: ",
+						"Era esperado uma expressão lógica depois do token "
+								+ listaTokens.get(indiceLista - 1)
+										.getNomeDoToken(),
+						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+
+				return;
+
+			}
+
+		} else {
+
+			numeroErro++;
+
+			ex.excecao(
+					"Erro sintático: ",
+					"Era esperado uma condição depois do token "
+							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
+					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+
+			return;
+
+		}
+
+	}
+
+	private void senao() {
+
+		if (comparaLexema(Tag.SENAO)) {
+
+			consomeToken();
+
+			if (comparaLexema('{')) {
+
+				consomeToken();
+
+				boolean c = true;
+
+				while (c) {
+
+					c = comeco();
+
+				}
+
+				if (numeroErro == 0) {
+
+					if (comparaLexema('}')) {
+
+						consomeToken();
+
+						condicional();
+
+					} else {
+
+						numeroErro++;
+
+						ex.excecao("Erro sintático: ",
+								"Era esperado o simbolo } depois do token "
+										+ listaTokens.get(indiceLista - 1)
+												.getNomeDoToken(), (listaTokens
+										.get(indiceLista - 1)
+										.getLinhaLocalizada()));
+
+						return;
+
+					}
+
+				} else {
+
+					return;
+
+				}
+
+			} else if (comparaLexema(Tag.SE)) {
+
+				condicional();
+
+			} else {
+
+				numeroErro++;
+
+				ex.excecao("Erro sintático: ",
+						"Era esperado o simbolo { depois do token "
+								+ listaTokens.get(indiceLista - 1)
+										.getNomeDoToken(),
+						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+
+				return;
+
+			}
+
+		} else {
+
+		}
+
+	}
+
+	private void expressaoLogica() {
+
+		if (comparaLexema('(')) {
+
+			consomeToken();
+
+			if (comparaLexema(Tag.NUMERICO) || comparaLexema(Tag.IDENTIFICADOR)) {
+
+				consomeToken();
+
+				if (comparaLexema(Tag.MENOR_Q) || comparaLexema(Tag.MAIOR_Q)
+						|| comparaLexema(Tag.MENOR_IGUAL)
+						|| comparaLexema(Tag.MAIOR_IGUAL)
+						|| comparaLexema(Tag.IGUAL)
+						|| comparaLexema(Tag.DIFERENTE)) {
+
+					consomeToken();
+
+					if (comparaLexema(Tag.NUMERICO)
+							|| comparaLexema(Tag.IDENTIFICADOR)) {
+
+						consomeToken();
+
+						if (comparaLexema(')')) {
+
+							consomeToken();
+
+						} else {
+
+							numeroErro++;
+
+							ex.excecao("Erro sintático: ",
+									"Era esperado um ) depois do token "
+											+ listaTokens.get(indiceLista - 1)
+													.getNomeDoToken(),
+									(listaTokens.get(indiceLista - 1)
+											.getLinhaLocalizada()));
+
+							return;
+
+						}
+
+					} else {
+
+						numeroErro++;
+
+						ex.excecao("Erro sintático: ",
+								"Era esperado um valor numerico ou identificador depois do token "
+										+ listaTokens.get(indiceLista - 1)
+												.getNomeDoToken(), (listaTokens
+										.get(indiceLista - 1)
+										.getLinhaLocalizada()));
+
+						return;
+
+					}
+
+				} else {
+
+					numeroErro++;
+
+					ex.excecao("Erro sintático: ",
+							"Era esperado um operador lógico depois do token "
+									+ listaTokens.get(indiceLista - 1)
+											.getNomeDoToken(), (listaTokens
+									.get(indiceLista - 1).getLinhaLocalizada()));
+
+					return;
+
+				}
+
+			} else {
+
+				numeroErro++;
+
+				ex.excecao("Erro sintático: ",
+						"Era esperado um valor numerico ou identificador depois do token "
+								+ listaTokens.get(indiceLista - 1)
+										.getNomeDoToken(),
+						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+
+				return;
+
+			}
+
+		} else {
+
 		}
 
 	}
