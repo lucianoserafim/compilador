@@ -29,6 +29,8 @@ public class Sintatico extends ASintatico {
 	 * Produção <principal>::=
 	 */
 	public void principal() {
+		
+		ex.erro = "";
 
 		/*
 		 * Verifica se a lista está vazia. Se a lista estiver vazia então o

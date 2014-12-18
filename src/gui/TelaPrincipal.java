@@ -18,14 +18,25 @@ import tokens.Token;
 import analisador_lexico.Lexico;
 import analisador_sintatico.Sintatico;
 import excecao.Excecao;
+import javax.swing.JTable;
+import java.awt.Color;
 
 public class TelaPrincipal extends JFrame {
 
 	private static final long serialVersionUID = -7004555160270830849L;
 
 	private JPanel contentPane;
+	
+	final Button btnLexica;
+	final Button btnSintatica;
 
 	JTextPane textPaneListaTokens = new JTextPane();
+	
+	private JTable table;
+	
+	private List<Token> ltl;
+	
+	private List<Token> lts;
 
 	/**
 	 * Launch the application.
@@ -48,7 +59,7 @@ public class TelaPrincipal extends JFrame {
 	 */
 	public TelaPrincipal() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 800, 600);
+		setBounds(100, 100, 1000, 600);
 		setTitle("Compilador");
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -90,29 +101,27 @@ public class TelaPrincipal extends JFrame {
 		textPaneConsole.setEditable(false);
 		scrollPaneConsole.setViewportView(textPaneConsole);
 
-		Button btnAnalise = new Button("Análise");
-		btnAnalise.addActionListener(new ActionListener() {
+		btnLexica = new Button("Análise léxica");
+		btnLexica.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				textPaneConsole.setText(" ");
 
 				Lexico lex = new Lexico(textPaneCodigo.getText());
 
-				List<Token> lt = lex.scanear();
+				ltl = lex.scanear();
 				
-				Sintatico sin = new Sintatico(lt);
-
-				sin.principal();
+				lts = ltl;
 
 				int i = 0;
 
 				String s = "";
 
-				if (lt != null) {
+				if (ltl != null) {
 
-					while (i < lt.size() - 1) {
+					while (i < ltl.size() - 1) {
 
-						s = s + lt.get(i).toString() + "\n";
+						s = s + ltl.get(i).toString() + "\n";
 
 						textPaneListaTokens.setText(s);
 
@@ -123,18 +132,21 @@ public class TelaPrincipal extends JFrame {
 				}
 
 				textPaneConsole.setText(Excecao.erro);
+				
+				btnLexica.disable();
+				btnSintatica.enable();
 
 			}
 		});
-		btnAnalise.setBounds(616, 542, 172, 48);
-		contentPane.add(btnAnalise);
+		btnLexica.setBounds(796, 542, 194, 48);
+		contentPane.add(btnLexica);
 
 		JScrollPane scrollPaneListaTokens = new JScrollPane();
-		scrollPaneListaTokens.setBounds(551, 27, 237, 376);
+		scrollPaneListaTokens.setBounds(794, 405, 194, 131);
 		contentPane.add(scrollPaneListaTokens);
-
-		textPaneListaTokens.setEditable(false);
-		scrollPaneListaTokens.setViewportView(textPaneListaTokens);
+				scrollPaneListaTokens.setViewportView(textPaneListaTokens);
+		
+				textPaneListaTokens.setEditable(false);
 
 		JPanel panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
@@ -149,7 +161,7 @@ public class TelaPrincipal extends JFrame {
 		FlowLayout fl_panelListaTokens = (FlowLayout) panelListaTokens
 				.getLayout();
 		fl_panelListaTokens.setAlignment(FlowLayout.LEFT);
-		panelListaTokens.setBounds(551, 0, 223, 25);
+		panelListaTokens.setBounds(794, 378, 194, 25);
 		contentPane.add(panelListaTokens);
 
 		JLabel labelListaTokens = new JLabel("Lista de Tokens");
@@ -158,10 +170,70 @@ public class TelaPrincipal extends JFrame {
 		JPanel panel_1 = new JPanel();
 		FlowLayout flowLayout_1 = (FlowLayout) panel_1.getLayout();
 		flowLayout_1.setAlignment(FlowLayout.LEFT);
-		panel_1.setBounds(12, 378, 537, 25);
+		panel_1.setBounds(12, 378, 776, 25);
 		contentPane.add(panel_1);
 
 		JLabel label = new JLabel("Console");
 		panel_1.add(label);
+		
+		JPanel panelTabelaSimbolos = new JPanel();
+		FlowLayout flowLayout_2 = (FlowLayout) panelTabelaSimbolos.getLayout();
+		flowLayout_2.setAlignment(FlowLayout.LEFT);
+		panelTabelaSimbolos.setBounds(553, 0, 427, 25);
+		contentPane.add(panelTabelaSimbolos);
+		
+		JLabel lblTabelaSimbolos = new JLabel("Tabela de simbolos");
+		panelTabelaSimbolos.add(lblTabelaSimbolos);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBackground(Color.WHITE);
+		scrollPane.setBounds(553, 27, 435, 350);
+		contentPane.add(scrollPane);
+		
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		
+		btnSintatica = new Button("Análise Sintática");
+		btnSintatica.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				textPaneConsole.setText(" ");
+				
+				Sintatico sin = new Sintatico(lts);
+
+				sin.principal();
+
+				int i = 0;
+
+				String s = "";
+
+				if (lts != null) {
+
+					while (i < lts.size() - 1) {
+
+						s = s + lts.get(i).toString() + "\n";
+
+						textPaneListaTokens.setText(s);
+
+						i++;
+
+					}
+
+				}
+
+				textPaneConsole.setText(Excecao.erro);
+				
+				btnSintatica.disable();
+				btnLexica.enable();
+				
+			}
+		});
+		btnSintatica.setBounds(596, 542, 194, 48);
+		btnSintatica.disable();
+		contentPane.add(btnSintatica);
+		
+		Button btnSemantica = new Button("Análise Semântia");
+		btnSemantica.setBounds(396, 542, 194, 48);
+		contentPane.add(btnSemantica);
 	}
 }

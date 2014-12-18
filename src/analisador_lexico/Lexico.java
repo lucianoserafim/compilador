@@ -5,11 +5,11 @@ import java.util.Hashtable;
 import java.util.List;
 
 import excecao.Excecao;
-import simbolos.Type;
 import tokens.Numerico;
 import tokens.Palavra;
 import tokens.Tag;
 import tokens.Token;
+import tokens.Type;
 
 /**
  * Classe para análise lexica
@@ -69,7 +69,7 @@ public class Lexico {
 	 */
 	public Lexico(String codigo) {
 
-		//listaTokens.clear();
+		listaTokens.clear();
 
 		/*
 		 * Código que será análisado
@@ -360,6 +360,8 @@ public class Lexico {
 						int v = Integer.parseInt(lexema);
 
 						Numerico n = new Numerico(v, linha);
+						
+						n.setNomeDoToken("NUMERICO");
 
 						listaTokens.add(n);
 
@@ -533,18 +535,6 @@ public class Lexico {
 		listaTokens.add(t);
 
 		ex.excecao("Análise léxica aceita.");
-		
-		System.out.println("LÉXICA : \n");
-
-		int n = 0;
-
-		while (n < listaTokens.size() - 1) {
-
-			System.out.println(listaTokens.get(n).getNomeDoToken());
-
-			n++;
-
-		}
 
 		return listaTokens;
 

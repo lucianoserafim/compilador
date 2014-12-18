@@ -1,7 +1,5 @@
-package simbolos;
+package tokens;
 
-import tokens.Palavra;
-import tokens.Tag;
 
 public class Type extends Palavra {
 	

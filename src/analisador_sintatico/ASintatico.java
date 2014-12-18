@@ -90,6 +90,8 @@ public abstract class ASintatico {
 		} else {
 
 		}
+		
+		System.out.println(listaTokens.get(indiceLista).getNomeDoToken() + "Escopo: " + escopoAtual);
 
 		indiceLista++;
 
