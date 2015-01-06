@@ -44,6 +44,12 @@ public abstract class ASintatico {
 	protected int numeroErro = 0;
 
 	/*
+	 * Verifica se é uma função ou procedimento, se for um procedimento não pode
+	 * ser atribuida
+	 */
+	protected int isProced = 0;
+
+	/*
 	 * Contrutor
 	 */
 	public ASintatico(List<Token> l) {

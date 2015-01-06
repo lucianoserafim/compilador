@@ -1104,7 +1104,7 @@ public class Sintatico extends ASintatico {
 
 				consomeToken();
 
-				valor();
+				valorImpressao();
 
 				if (numeroErro == 0) {
 
@@ -1168,6 +1168,80 @@ public class Sintatico extends ASintatico {
 			}
 
 		} else {
+
+		}
+
+	}
+	
+	private void valorImpressao() {
+
+		if (comparaLexema(Tag.NUMERICO)) {
+
+			consomeToken();
+
+		} else if (comparaLexema(Tag.VERDADEIRO) || comparaLexema(Tag.FALSO)) {
+
+			consomeToken();
+
+		} else if (comparaLexema(Tag.IDENTIFICADOR)) {
+			
+			indiceLista++;
+
+			if (comparaLexema('(')) {
+
+				indiceLista--;
+
+				chamaFuncaoProced();
+
+			} else {
+				
+				indiceLista--;
+				
+				consomeToken();
+
+			}
+
+		} else if (comparaLexema('(')) {
+
+			consomeToken();
+
+			expressaoAritmetica();
+
+			if (numeroErro == 0) {
+
+				if (comparaLexema(')')) {
+
+					consomeToken();
+
+				} else {
+
+					numeroErro++;
+
+					ex.excecao("Erro sintático: ",
+							"Era esperado um ) depois do token "
+									+ listaTokens.get(indiceLista - 1)
+											.getNomeDoToken(), (listaTokens
+									.get(indiceLista - 1).getLinhaLocalizada()));
+
+					return;
+
+				}
+
+			} else {
+
+			}
+
+		} else {
+
+			numeroErro++;
+
+			ex.excecao(
+					"Erro sintático: ",
+					"Era esperado um valor depois do token "
+							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
+					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+
+			return;
 
 		}
 
@@ -1977,35 +2051,6 @@ public class Sintatico extends ASintatico {
 		} else if (comparaLexema(Tag.IDENTIFICADOR)) {
 
 			consomeToken();
-
-			/*
-			 * indiceLista++;
-			 * 
-			 * if (comparaLexema('(')) {
-			 * 
-			 * indiceLista--;
-			 * 
-			 * chamaFuncaoProced();
-			 * 
-			 * if (numeroErro == 0) {
-			 * 
-			 * } else {
-			 * 
-			 * numeroErro++;
-			 * 
-			 * ex.excecao("Erro sintático: ",
-			 * "Era esperado uma condição depois do token " +
-			 * listaTokens.get(indiceLista - 1) .getNomeDoToken(), (listaTokens
-			 * .get(indiceLista - 1).getLinhaLocalizada()));
-			 * 
-			 * return;
-			 * 
-			 * }
-			 * 
-			 * } else {
-			 * 
-			 * }
-			 */
 
 		} else if (comparaLexema('(')) {
 

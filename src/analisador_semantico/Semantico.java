@@ -3,12 +3,12 @@ package analisador_semantico;
 import java.util.ArrayList;
 import java.util.List;
 
-import analisador_sintatico.ASintatico;
 import simbolos.Parametro;
 import simbolos.Simbolo;
 import simbolos.TabelaDeSimbolos;
 import tokens.Tag;
 import tokens.Token;
+import analisador_sintatico.ASintatico;
 import excecao.Excecao;
 
 /**
@@ -575,7 +575,29 @@ public class Semantico extends ASintatico {
 
 		} else if (comparaLexema(Tag.IDENTIFICADOR)) {
 
-			consomeToken();
+			Simbolo s = new Simbolo(escopoAtual, null, listaTokens.get(
+					indiceLista).getNomeDoToken(), null, "VARIAVEL");
+
+			boolean b = TabelaDeSimbolos.getTabelaDeSimbolos()
+					.verificarDeclaracaoVariavel(s);
+
+			if (!b) {
+
+				numeroErro++;
+
+				ex.excecao("Erro semântico: ",
+						"A variável não foi declarada depois do token "
+								+ listaTokens.get(indiceLista - 1)
+										.getNomeDoToken(),
+						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+
+				return;
+
+			} else {
+
+				consomeToken();
+
+			}
 
 		} else {
 
@@ -780,6 +802,20 @@ public class Semantico extends ASintatico {
 
 				chamaFuncaoProced(c);
 
+				if (isProced == 1) {
+
+					numeroErro++;
+
+					ex.excecao("Erro semântico: ",
+							"Procedimento não pode ser atribuido depois do token "
+									+ listaTokens.get(indiceLista - 1)
+											.getNomeDoToken(), (listaTokens
+									.get(indiceLista - 1).getLinhaLocalizada()));
+
+					return;
+
+				}
+
 			} else {
 
 				indiceLista--;
@@ -813,16 +849,19 @@ public class Semantico extends ASintatico {
 					consomeToken();
 
 				} else {
-					
+
 					numeroErro++;
 
 					ex.excecao("Erro semântico: ",
 							"O tipo da variável "
 									+ s.getLexema()
-									+ " diferente" + " do tipo da variável " + c.getLexema() + " antes do token "
+									+ " diferente"
+									+ " do tipo da variável "
+									+ c.getLexema()
+									+ " antes do token "
 									+ listaTokens.get(indiceLista - 1)
-											.getNomeDoToken(),
-							(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+											.getNomeDoToken(), (listaTokens
+									.get(indiceLista - 1).getLinhaLocalizada()));
 
 					return;
 
@@ -1064,6 +1103,45 @@ public class Semantico extends ASintatico {
 		} else if (comparaLexema(Tag.NUMERICO)
 				|| comparaLexema(Tag.IDENTIFICADOR)) {
 
+			if (comparaLexema(Tag.IDENTIFICADOR)) {
+
+				Simbolo s = new Simbolo(escopoAtual, null, listaTokens.get(
+						indiceLista).getNomeDoToken(), null, "VARIAVEL");
+
+				boolean b = TabelaDeSimbolos.getTabelaDeSimbolos()
+						.verificarDeclaracaoVariavel(s);
+
+				Simbolo t = TabelaDeSimbolos.getTabelaDeSimbolos()
+						.retornaVariavel(s);
+
+				if (!b) {
+
+					numeroErro++;
+
+					ex.excecao("Erro semântico: Variável " + s.getLexema(),
+							" não declarada depois do token "
+									+ listaTokens.get(indiceLista - 1)
+											.getNomeDoToken(), (listaTokens
+									.get(indiceLista - 1).getLinhaLocalizada()));
+
+					return;
+
+				} else if (t.getTipoLexema().equals("BOOLEANO")) {
+
+					numeroErro++;
+
+					ex.excecao("Erro semântico: ",
+							"Variável do tipo INTEIRO antes do token "
+									+ listaTokens.get(indiceLista - 1)
+											.getNomeDoToken(), (listaTokens
+									.get(indiceLista - 1).getLinhaLocalizada()));
+
+					return;
+
+				}
+
+			}
+
 			fatorAux();
 
 		} else {
@@ -1180,7 +1258,7 @@ public class Semantico extends ASintatico {
 
 				consomeToken();
 
-				// valor();
+				valorImpressao();
 
 				if (numeroErro == 0) {
 
@@ -1244,6 +1322,109 @@ public class Semantico extends ASintatico {
 			}
 
 		} else {
+
+		}
+
+	}
+
+	private void valorImpressao() {
+
+		if (comparaLexema(Tag.NUMERICO)) {
+
+			consomeToken();
+
+		} else if (comparaLexema(Tag.VERDADEIRO) || comparaLexema(Tag.FALSO)) {
+
+			consomeToken();
+
+		} else if (comparaLexema(Tag.IDENTIFICADOR)) {
+
+			Simbolo c = new Simbolo(escopoAtual, null, listaTokens.get(
+					indiceLista).getNomeDoToken(), null, "VARIAVEL");
+
+			boolean v = TabelaDeSimbolos.getTabelaDeSimbolos()
+					.verificarDeclaracaoVariavel(c);
+
+			if (!v) {
+
+				numeroErro++;
+
+				ex.excecao("Erro semântico: ",
+						"Variável não declarada depois do token "
+								+ listaTokens.get(indiceLista - 1)
+										.getNomeDoToken(),
+						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+
+				return;
+
+			} else {
+
+				String t = TabelaDeSimbolos.getTabelaDeSimbolos()
+						.retornaVariavel(c).getTipoLexema();
+
+				c.setTipo(t);
+
+				c.setClasse(null);
+
+				indiceLista++;
+
+			}
+
+			if (comparaLexema('(')) {
+
+				indiceLista--;
+
+				chamaFuncaoProced(c);
+
+			} else {
+
+				indiceLista--;
+
+				consomeToken();
+
+			}
+
+		} else if (comparaLexema('(')) {
+
+			consomeToken();
+
+			expressaoAritmetica();
+
+			if (numeroErro == 0) {
+
+				if (comparaLexema(')')) {
+
+					consomeToken();
+
+				} else {
+
+					numeroErro++;
+
+					ex.excecao("Erro sintático: ",
+							"Era esperado um ) depois do token "
+									+ listaTokens.get(indiceLista - 1)
+											.getNomeDoToken(), (listaTokens
+									.get(indiceLista - 1).getLinhaLocalizada()));
+
+					return;
+
+				}
+
+			} else {
+
+			}
+
+		} else {
+
+			numeroErro++;
+
+			ex.excecao(
+					"Erro sintático: ",
+					"Era esperado um valor depois do token "
+							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
+					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+
+			return;
 
 		}
 
@@ -1632,10 +1813,29 @@ public class Semantico extends ASintatico {
 						indiceLista - 1).getNomeDoToken(), listaTokens.get(
 						indiceLista).getNomeDoToken(), null, "VARIAVEL");
 
-				TabelaDeSimbolos.getTabelaDeSimbolos().inserirSimbolo(
-						simboloVariavel);
+				boolean b = TabelaDeSimbolos.getTabelaDeSimbolos()
+						.verificarDeclaracaoVariavel(simboloVariavel);
 
-				consomeToken();
+				if (b) {
+
+					numeroErro++;
+
+					ex.excecao("Erro semântico: ",
+							"Variável já declarada depois do token "
+									+ listaTokens.get(indiceLista - 1)
+											.getNomeDoToken(), (listaTokens
+									.get(indiceLista - 1).getLinhaLocalizada()));
+
+					return;
+
+				} else {
+
+					TabelaDeSimbolos.getTabelaDeSimbolos().inserirSimbolo(
+							simboloVariavel);
+
+					consomeToken();
+
+				}
 
 				if (comparaLexema(';')) {
 
@@ -1721,14 +1921,78 @@ public class Semantico extends ASintatico {
 	private void chamaFuncaoProced(Simbolo s) {
 
 		if (comparaLexema(Tag.IDENTIFICADOR)) {
-			
+
 			consomeToken();
 
 			if (comparaLexema('(')) {
 
 				consomeToken();
 
-				listaArgumentos();
+				Simbolo r = TabelaDeSimbolos.getTabelaDeSimbolos()
+						.retornaFuncProced(s);
+
+				if (r != null) {
+
+					s.setTipoRetorno(r.getTipoLexema());
+
+					s.setClasse(r.getClasse());
+
+					if (s.getClasse() == "PROCEDIMENTO") {
+
+						isProced = 1;
+
+					}
+
+					int i = indiceLista;
+
+					int quantParametros = 0;
+
+					while (listaTokens.get(i).getTag() != ')') {
+
+						if (listaTokens.get(i).getTag() != ',') {
+
+							quantParametros++;
+
+						}
+
+						i++;
+
+					}
+
+					Simbolo t = TabelaDeSimbolos.getTabelaDeSimbolos()
+							.verificarDeclFuncProced(s, quantParametros);
+
+					if (t == null) {
+
+						numeroErro++;
+
+						ex.excecao("Erro semântico: ",
+								"Quantidade de parametros não declarados depois do token "
+										+ listaTokens.get(indiceLista - 1)
+												.getNomeDoToken(), (listaTokens
+										.get(indiceLista - 1)
+										.getLinhaLocalizada()));
+
+						return;
+
+					} else {
+
+						listaArgumentos();
+
+					}
+
+				} else {
+
+					numeroErro++;
+
+					ex.excecao("Erro semântico: ",
+							"Função ou Procedimento não declarada ",
+							(listaTokens.get(indiceLista - 1)
+									.getLinhaLocalizada()));
+
+					return;
+
+				}
 
 				if (numeroErro == 0) {
 
@@ -2079,36 +2343,29 @@ public class Semantico extends ASintatico {
 
 		} else if (comparaLexema(Tag.IDENTIFICADOR)) {
 
-			consomeToken();
+			Simbolo s = new Simbolo(escopoAtual, null, listaTokens.get(
+					indiceLista).getNomeDoToken(), null, "VARIAVEL");
 
-			/*
-			 * indiceLista++;
-			 * 
-			 * if (comparaLexema('(')) {
-			 * 
-			 * indiceLista--;
-			 * 
-			 * chamaFuncaoProced();
-			 * 
-			 * if (numeroErro == 0) {
-			 * 
-			 * } else {
-			 * 
-			 * numeroErro++;
-			 * 
-			 * ex.excecao("Erro sintático: ",
-			 * "Era esperado uma condição depois do token " +
-			 * listaTokens.get(indiceLista - 1) .getNomeDoToken(), (listaTokens
-			 * .get(indiceLista - 1).getLinhaLocalizada()));
-			 * 
-			 * return;
-			 * 
-			 * }
-			 * 
-			 * } else {
-			 * 
-			 * }
-			 */
+			boolean b = TabelaDeSimbolos.getTabelaDeSimbolos()
+					.verificarDeclaracaoVariavel(s);
+
+			if (b) {
+
+				indiceLista++;
+
+			} else {
+
+				numeroErro++;
+
+				ex.excecao("Erro semântico: ",
+						"Variável não declarada antes do token "
+								+ listaTokens.get(indiceLista - 1)
+										.getNomeDoToken(),
+						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+
+				return;
+
+			}
 
 		} else if (comparaLexema('(')) {
 
@@ -2237,6 +2494,45 @@ public class Semantico extends ASintatico {
 
 					if (comparaLexema(Tag.NUMERICO)
 							|| comparaLexema(Tag.IDENTIFICADOR)) {
+						
+						if (comparaLexema(Tag.IDENTIFICADOR)) {
+
+							Simbolo s = new Simbolo(escopoAtual, null, listaTokens.get(
+									indiceLista).getNomeDoToken(), null, "VARIAVEL");
+
+							boolean b = TabelaDeSimbolos.getTabelaDeSimbolos()
+									.verificarDeclaracaoVariavel(s);
+
+							Simbolo t = TabelaDeSimbolos.getTabelaDeSimbolos()
+									.retornaVariavel(s);
+
+							if (!b) {
+
+								numeroErro++;
+
+								ex.excecao("Erro semântico: Variável " + s.getLexema(),
+										" não declarada depois do token "
+												+ listaTokens.get(indiceLista - 1)
+														.getNomeDoToken(), (listaTokens
+												.get(indiceLista - 1).getLinhaLocalizada()));
+
+								return;
+
+							} else if (t.getTipoLexema().equals("BOOLEANO")) {
+
+								numeroErro++;
+
+								ex.excecao("Erro semântico: ",
+										"Variável do tipo INTEIRO antes do token "
+												+ listaTokens.get(indiceLista - 1)
+														.getNomeDoToken(), (listaTokens
+												.get(indiceLista - 1).getLinhaLocalizada()));
+
+								return;
+
+							}
+
+						}
 
 						consomeToken();
 
