@@ -79,19 +79,19 @@ public abstract class ASintatico {
 
 	public void consomeToken() {
 
-		if (listaTokens.get(indiceLista).toString().equals("{")) {
+		if (listaTokens.get(indiceLista).toString().equals("{")
+				|| listaTokens.get(indiceLista).toString().equals("INICIO")) {
 
 			this.empilhaLexema();
 
-		} else if (listaTokens.get(indiceLista).toString().equals("}")) {
+		} else if (listaTokens.get(indiceLista).toString().equals("}")
+				|| listaTokens.get(indiceLista).toString().equals("FIM")) {
 
 			this.desempilhaLexema();
 
 		} else {
 
 		}
-		
-		System.out.println(listaTokens.get(indiceLista).getNomeDoToken() + "Escopo: " + escopoAtual);
 
 		indiceLista++;
 
@@ -100,9 +100,9 @@ public abstract class ASintatico {
 	/*
 	 * Metodo finaliza o programa caso a análise léxica seja aceita
 	 */
-	protected void finalizarPrograma() {
+	protected void finalizarPrograma(String s) {
 
-		ex.excecao("Análise sintática aceita.");
+		ex.excecao("Análise " + s + " aceita.");
 
 		return;
 

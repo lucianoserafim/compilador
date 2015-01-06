@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import excecao.Excecao;
+import simbolos.TabelaDeSimbolos;
 import tokens.Numerico;
 import tokens.Palavra;
 import tokens.Tag;
@@ -109,7 +110,7 @@ public class Lexico {
 		this.reservaPalavras(Palavra.MENOR_IGUAL);
 		this.reservaPalavras(Palavra.IMPRIME);
 
-	}
+	}// Lexico(String codigo) {}
 
 	/*
 	 * Metodo que preenche a tabela de palavras reservadas no construtor
@@ -118,7 +119,7 @@ public class Lexico {
 
 		palavrasReservadas.put(p.lex, p);
 
-	}
+	}// reservaPalavras(Palavra p) {}
 
 	/*
 	 * Metodo responsável por retornar a palavra reservada
@@ -135,7 +136,7 @@ public class Lexico {
 
 		}
 
-	}
+	}// getPalavraReservada(String l) {}
 
 	/*
 	 * Metodo para verificar se a palavra é maiuscula.
@@ -150,7 +151,7 @@ public class Lexico {
 
 		return false;
 
-	}
+	}// isMaiuscula(char caractere) {}
 
 	/*
 	 * Metodo para verificar se a palavra é um identificador. As palavras
@@ -168,7 +169,7 @@ public class Lexico {
 
 		}
 
-	}
+	}// isMinuscula(char caractere) {}
 
 	/*
 	 * Metodo verifica se a palavra é um numero
@@ -184,7 +185,7 @@ public class Lexico {
 
 		return false;
 
-	}
+	}// isNumerico(char caractere) {}
 
 	/*
 	 * Metodo responsável por verificar se a palavra reservada existe
@@ -195,7 +196,7 @@ public class Lexico {
 
 		return p;
 
-	}
+	}// isPalavraReservada(String l) {}
 
 	/*
 	 * Metodo que le o simbolo atual
@@ -210,7 +211,7 @@ public class Lexico {
 
 		return caractereAtualLido;
 
-	}
+	}// lerCaractereAtual() {}
 
 	/*
 	 * Metodo que lê o lookahead
@@ -230,18 +231,21 @@ public class Lexico {
 
 		return lookAhead;
 
-	}
+	}// lerProximoCaractere() {}
 
 	/*
-	 * Metodo responsável por ler todo código e devolver uma lista para o parser
+	 * Metodo responsável por ler todo código e devolver uma lista para o
+	 * análisador sintático
 	 */
 	public List<Token> scanear() {
+		
+		TabelaDeSimbolos.getTabelaDeSimbolos().getListaDeSimbolos().clear();
 
 		ex.erro = "";
 
 		if (codigoFonte.equals("")) {
 
-			ex.excecao("Análise léxica aceita.");
+			ex.excecao("Análise léxica aceita. Palavra vazia.");
 
 			return null;
 
@@ -287,7 +291,8 @@ public class Lexico {
 
 					} else if (isPalavraReservada(lexema)) {
 
-						Token t = new Token(getPalavraReservada(lexema).tag, linha);
+						Token t = new Token(getPalavraReservada(lexema).tag,
+								linha);
 
 						t.setNomeDoToken(lexema);
 
@@ -360,7 +365,7 @@ public class Lexico {
 						int v = Integer.parseInt(lexema);
 
 						Numerico n = new Numerico(v, linha);
-						
+
 						n.setNomeDoToken("NUMERICO");
 
 						listaTokens.add(n);
@@ -446,7 +451,8 @@ public class Lexico {
 
 						numeroCaractereAtual++;
 
-						Token t = new Token(getPalavraReservada("<=").tag, linha);
+						Token t = new Token(getPalavraReservada("<=").tag,
+								linha);
 
 						t.setNomeDoToken("<=");
 
@@ -478,7 +484,8 @@ public class Lexico {
 
 						numeroCaractereAtual++;
 
-						Token t = new Token(getPalavraReservada(">=").tag, linha);
+						Token t = new Token(getPalavraReservada(">=").tag,
+								linha);
 
 						t.setNomeDoToken("=>");
 
@@ -510,7 +517,8 @@ public class Lexico {
 
 						numeroCaractereAtual++;
 
-						Token t = new Token(getPalavraReservada("==").tag, linha);
+						Token t = new Token(getPalavraReservada("==").tag,
+								linha);
 
 						listaTokens.add(t);
 
@@ -526,17 +534,18 @@ public class Lexico {
 
 				}
 
-			}/* while (numeroCaractereAtual < codigoFonte.length()) */
+			}// while (numeroCaractereAtual < codigoFonte.length()){}
 
 		}
 
 		Token t = new Token(getPalavraReservada("$").tag, linha);
 
 		listaTokens.add(t);
-
+		
 		ex.excecao("Análise léxica aceita.");
 
 		return listaTokens;
 
-	}
-}
+	}// scanear() {}
+	
+}// Lexico {}

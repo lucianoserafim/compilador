@@ -14,11 +14,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
 
+import simbolos.Simbolo;
+import simbolos.TabelaDeSimbolos;
 import tokens.Token;
 import analisador_lexico.Lexico;
+import analisador_semantico.Semantico;
 import analisador_sintatico.Sintatico;
 import excecao.Excecao;
+
 import javax.swing.JTable;
+
 import java.awt.Color;
 
 public class TelaPrincipal extends JFrame {
@@ -26,16 +31,17 @@ public class TelaPrincipal extends JFrame {
 	private static final long serialVersionUID = -7004555160270830849L;
 
 	private JPanel contentPane;
-	
+
 	final Button btnLexica;
 	final Button btnSintatica;
+	final Button btnSemantica;
 
 	JTextPane textPaneListaTokens = new JTextPane();
-	
+
 	private JTable table;
-	
+
 	private List<Token> ltl;
-	
+
 	private List<Token> lts;
 
 	/**
@@ -72,23 +78,29 @@ public class TelaPrincipal extends JFrame {
 
 		final JTextPane textPaneCodigo = new JTextPane();
 
-		textPaneCodigo.setText(""
-				+ "VOID testeproced(INTEIRO a, INTEIRO b){\n\n}\n\n"
-				+ "FUNCAO INTEIRO testefuncao(INTEIRO c){\n\nRETORNA (d);\n\n}\n\n"
-				+ "INICIO\n\n"
-				+ "INTEIRO variavel;\n\n"
-				+ "variavel = 5;\n\n"
-				+ "testefuncao(e);\n\n"
-				+ "testeproced(a,k);"
-				+ "SE(testefuncao();){\n\nINTEIRO idade;\n\n"
-				+ "\n\n}"
-				+ "SENAO SE(a){\n\n"
-				+ "IMPRIME(idade);\n\n"
-				+ "}\n\n"
-				+ "ENQUANTO((a < b)){\n\nSE(FALSO){\n\nBOOLEANO f;\n\n}SENAO SE(a){\n\nf = FALSO;\n\n}\n\n}\n\n"
-				+ "testeproced(a,b);\n\n"
-				+ "\n\nFIM");
-
+		textPaneCodigo
+				.setText(""
+						+ "VOID testeproced(INTEIRO a, INTEIRO b){\n\n"
+						+ "INTEIRO  x;\n\n"
+						+ "x = (a + b + (5 * 3));\n\n"
+						+ "}\n\n"
+						//+ "FUNCAO INTEIRO testefuncao(INTEIRO c){\n\nINTEIRO d;\n\nRETORNA (d);\n\n}\n\n"
+						+ "INICIO\n\n"
+						+ "INTEIRO a;\n\n"
+						+ "INTEIRO b;\n\n"
+						+ "a = 5;\n\n"
+						//+ "testefuncao(e);\n\n"
+						//+ "testeproced(a,k);\n\n"
+						//+ "SE(a){"
+						//+ "\n\nINTEIRO idade;\n\n"
+						//+ "idade = 5;"
+						//+ "\n\n}"
+						//+ "SENAO SE(a){\n\n"
+						//+ "IMPRIME(idade);\n\n"
+						//+ "}\n\n"
+						//+ "ENQUANTO((a < b)){\n\nSE(FALSO){\n\nBOOLEANO f;\n\n}SENAO SE(a){\n\nf = FALSO;\n\n}\n\n}\n\n"
+						//+ "testeproced(a,b);" 
+						+ "\n\nFIM");
 
 		textPaneCodigo.setBorder(new Linhas());
 		scrollPaneCodigo.setViewportView(textPaneCodigo);
@@ -110,7 +122,7 @@ public class TelaPrincipal extends JFrame {
 				Lexico lex = new Lexico(textPaneCodigo.getText());
 
 				ltl = lex.scanear();
-				
+
 				lts = ltl;
 
 				int i = 0;
@@ -132,7 +144,7 @@ public class TelaPrincipal extends JFrame {
 				}
 
 				textPaneConsole.setText(Excecao.erro);
-				
+
 				btnLexica.disable();
 				btnSintatica.enable();
 
@@ -144,9 +156,9 @@ public class TelaPrincipal extends JFrame {
 		JScrollPane scrollPaneListaTokens = new JScrollPane();
 		scrollPaneListaTokens.setBounds(794, 405, 194, 131);
 		contentPane.add(scrollPaneListaTokens);
-				scrollPaneListaTokens.setViewportView(textPaneListaTokens);
-		
-				textPaneListaTokens.setEditable(false);
+		scrollPaneListaTokens.setViewportView(textPaneListaTokens);
+
+		textPaneListaTokens.setEditable(false);
 
 		JPanel panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
@@ -175,33 +187,33 @@ public class TelaPrincipal extends JFrame {
 
 		JLabel label = new JLabel("Console");
 		panel_1.add(label);
-		
+
 		JPanel panelTabelaSimbolos = new JPanel();
 		FlowLayout flowLayout_2 = (FlowLayout) panelTabelaSimbolos.getLayout();
 		flowLayout_2.setAlignment(FlowLayout.LEFT);
 		panelTabelaSimbolos.setBounds(553, 0, 427, 25);
 		contentPane.add(panelTabelaSimbolos);
-		
+
 		JLabel lblTabelaSimbolos = new JLabel("Tabela de simbolos");
 		panelTabelaSimbolos.add(lblTabelaSimbolos);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBackground(Color.WHITE);
 		scrollPane.setBounds(553, 27, 435, 350);
 		contentPane.add(scrollPane);
-		
+
 		table = new JTable();
 		scrollPane.setViewportView(table);
-		
+
 		btnSintatica = new Button("Análise Sintática");
 		btnSintatica.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
 				textPaneConsole.setText(" ");
-				
+
 				Sintatico sin = new Sintatico(lts);
 
-				sin.principal();
+				sin.principalSintatico();
 
 				int i = 0;
 
@@ -222,18 +234,71 @@ public class TelaPrincipal extends JFrame {
 				}
 
 				textPaneConsole.setText(Excecao.erro);
-				
+
 				btnSintatica.disable();
-				btnLexica.enable();
-				
+				btnLexica.disable();
+				btnSemantica.enable();
+
+				preencherTabelaSimlobos();
+
 			}
 		});
 		btnSintatica.setBounds(596, 542, 194, 48);
 		btnSintatica.disable();
 		contentPane.add(btnSintatica);
 		
-		Button btnSemantica = new Button("Análise Semântia");
+
+		btnSemantica = new Button("Análise Semântia");
+		btnSemantica.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				textPaneConsole.setText(" ");
+
+				Semantico sem = new Semantico(lts);
+
+				sem.principalSemantico();
+
+				int i = 0;
+
+				String s = "";
+
+				if (lts != null) {
+
+					while (i < lts.size() - 1) {
+
+						s = s + lts.get(i).toString() + "\n";
+
+						textPaneListaTokens.setText(s);
+
+						i++;
+
+					}
+
+				}
+
+				textPaneConsole.setText(Excecao.erro);
+
+				btnSintatica.disable();
+				btnLexica.enable();
+				btnSemantica.disable();
+
+				preencherTabelaSimlobos();
+
+			}
+		});
+		
 		btnSemantica.setBounds(396, 542, 194, 48);
+		btnSemantica.disable();
 		contentPane.add(btnSemantica);
+
+	}
+
+	private void preencherTabelaSimlobos() {
+
+		List<Simbolo> lTS = TabelaDeSimbolos.getTabelaDeSimbolos()
+				.getListaDeSimbolos();
+		TabelaSimbolosModel tsm = new TabelaSimbolosModel(lTS);
+		table.setModel(tsm);
+
 	}
 }

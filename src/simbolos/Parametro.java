@@ -4,11 +4,11 @@ public class Parametro extends Simbolo {
 
 	private String nomeDoTipo;
 
-	public Parametro(int e, String t, String l) {
+	public Parametro(int escopo, String tipo, String lexema) {
 
-		super(e, null, l, null, "PARAMETRO");
+		super(escopo, null, lexema, null, "PARAMETRO");
 
-		boolean i = t.contains("INTEIRO");
+		boolean i = tipo.contains("INTEIRO");
 
 		if (i) {
 

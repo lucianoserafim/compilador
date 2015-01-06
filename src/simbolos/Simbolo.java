@@ -2,8 +2,6 @@ package simbolos;
 
 import java.util.List;
 
-import tokens.Palavra;
-
 public class Simbolo {
 
 	/*
@@ -14,7 +12,12 @@ public class Simbolo {
 	/*
 	 * Tipo da variável, INTEIRO ou BOOLEANO
 	 */
-	private Palavra tipo;
+	private String tipo;
+	
+	/*
+	 * Tipo da variável, INTEIRO ou BOOLEANO
+	 */
+	private String tipoRetorno = null;
 	
 	/*
 	 * Classe variável, FUNCAO ou PROCED
@@ -31,7 +34,7 @@ public class Simbolo {
 	 */
 	private List<Parametro> listaParametros;
 
-	public Simbolo(int escopo, Palavra tipo, String lexema,
+	public Simbolo(int escopo, String tipo, String lexema,
 			List<Parametro> listaParametros, String classe) {
 		
 		this.escopo = escopo;
@@ -44,6 +47,29 @@ public class Simbolo {
 	public Simbolo(){
 		
 	}
+	
+	public String getTipoLexema() {
+
+		String s = "";
+
+		if (tipo == null) {
+
+			s = "null";
+
+		} else {
+
+			s = tipo;
+
+		}
+
+		return s;
+	}
+
+	@Override
+	public String toString(){
+		
+		return this.lexema;
+	}
 
 	public int getEscopo() {
 		return escopo;
@@ -53,12 +79,20 @@ public class Simbolo {
 		this.escopo = escopo;
 	}
 
-	public Palavra getTipo() {
+	public String getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(Palavra tipo) {
+	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+
+	public String getTipoRetorno() {
+		return tipoRetorno;
+	}
+
+	public void setTipoRetorno(String tipoRetorno) {
+		this.tipoRetorno = tipoRetorno;
 	}
 
 	public String getClasse() {
@@ -84,23 +118,6 @@ public class Simbolo {
 	public void setListaParametros(List<Parametro> listaParametros) {
 		this.listaParametros = listaParametros;
 	}
-	
-	public String getTipoLexema() {
-
-		String s = "";
-
-		if (tipo == null) {
-
-			s = "null";
-
-		} else {
-
-			s = tipo.lex;
-
-		}
-
-		return s;
-	}
 
 	@Override
 	public int hashCode() {
@@ -112,6 +129,8 @@ public class Simbolo {
 		result = prime * result
 				+ ((listaParametros == null) ? 0 : listaParametros.hashCode());
 		result = prime * result + ((tipo == null) ? 0 : tipo.hashCode());
+		result = prime * result
+				+ ((tipoRetorno == null) ? 0 : tipoRetorno.hashCode());
 		return result;
 	}
 
@@ -146,13 +165,12 @@ public class Simbolo {
 				return false;
 		} else if (!tipo.equals(other.tipo))
 			return false;
+		if (tipoRetorno == null) {
+			if (other.tipoRetorno != null)
+				return false;
+		} else if (!tipoRetorno.equals(other.tipoRetorno))
+			return false;
 		return true;
-	}
-	
-	@Override
-	public String toString(){
-		
-		return this.lexema;
 	}
 
 }
