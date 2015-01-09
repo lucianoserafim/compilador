@@ -22,6 +22,10 @@ public class Parametro extends Simbolo {
 
 	}
 
+	public String getNomeDoTipo() {
+		return nomeDoTipo;
+	}
+
 	public void setNomeTipo(String n) {
 
 		nomeDoTipo = n;

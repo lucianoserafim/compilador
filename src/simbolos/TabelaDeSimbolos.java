@@ -44,7 +44,7 @@ public class TabelaDeSimbolos {
 		for (int i = 0; i < listaDeSimbolos.size(); i++) {
 
 			if (s.getLexema().equals(listaDeSimbolos.get(i).getLexema())
-					&& (ASintatico.escopo.contains(s.getEscopo()))
+					&& (listaDeSimbolos.get(i).getEscopo() == (s.getEscopo()))
 					&& s.getClasse().equals("VARIAVEL")) {
 				
 				return true;
@@ -59,7 +59,7 @@ public class TabelaDeSimbolos {
 		for (int i = 0; i < listaDeSimbolos.size(); i++) {
 
 			if (s.getLexema().equals(listaDeSimbolos.get(i).getLexema())
-					&& (ASintatico.escopo.contains(s.getEscopo()))
+					&& (listaDeSimbolos.get(i).getEscopo() == (s.getEscopo()))
 					&& s.getClasse().equals("VARIAVEL")) {
 								
 				return listaDeSimbolos.get(i);

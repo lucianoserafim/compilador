@@ -35,7 +35,17 @@ public class Semantico extends ASintatico {
 	 */
 	public void principalSemantico() {
 
+		/*
+		 * Limpa o console da aplicação
+		 */
 		ex.erro = "";
+		
+		/*
+		 * Limpa contadores
+		 */
+		escopo.clear();
+		escopoAtual = 0;
+		contaEscopo = 0;
 
 		/*
 		 * Verifica se a lista está vazia. Se a lista estiver vazia então o
@@ -50,6 +60,9 @@ public class Semantico extends ASintatico {
 
 		}
 
+		/*
+		 * Limpa lista de simbolos
+		 */
 		TabelaDeSimbolos.getTabelaDeSimbolos().getListaDeSimbolos().clear();
 
 		boolean dpf = true;
@@ -77,7 +90,7 @@ public class Semantico extends ASintatico {
 				if (numeroErro == 0) {
 
 					if (comparaLexema(Tag.FIM)) {
-
+						
 						consomeToken();
 
 						finalizarPrograma("semântica");
@@ -86,12 +99,7 @@ public class Semantico extends ASintatico {
 
 						numeroErro++;
 
-						ex.excecao("Erro sintático: ",
-								"Era esperado a palavra reservada FIM depois do token "
-										+ listaTokens.get(indiceLista - 1)
-												.getNomeDoToken(), (listaTokens
-										.get(indiceLista - 1)
-										.getLinhaLocalizada()));
+						ex.excecao("89");
 
 						return;
 
@@ -101,7 +109,7 @@ public class Semantico extends ASintatico {
 
 					numeroErro++;
 
-					ex.excecao("Erro sintático: Análise não aceita.");
+					ex.excecao("Erro semântico: Análise não aceita.");
 
 					return;
 
@@ -111,9 +119,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao("Erro sintático: Era esperado a palavra reservada ",
-						"INICIO", listaTokens.get(indiceLista)
-								.getLinhaLocalizada());
+				ex.excecao("109");
 
 				return;
 
@@ -121,7 +127,7 @@ public class Semantico extends ASintatico {
 
 		} else {
 
-			ex.excecao("Erro sintático: Análise não aceita.");
+			ex.excecao("Erro semântico: Análise não aceita.");
 
 			return;
 
@@ -207,15 +213,7 @@ public class Semantico extends ASintatico {
 
 										numeroErro++;
 
-										ex.excecao(
-												"Erro sintático: ",
-												"Era esperado um } depois do token "
-														+ listaTokens
-																.get(indiceLista - 1)
-																.getNomeDoToken(),
-												(listaTokens
-														.get(indiceLista - 1)
-														.getLinhaLocalizada()));
+										ex.excecao("203");
 
 										return;
 
@@ -231,14 +229,7 @@ public class Semantico extends ASintatico {
 
 								numeroErro++;
 
-								ex.excecao(
-										"Erro sintático: ",
-										"Era esperado um { depois do token "
-												+ listaTokens.get(
-														indiceLista - 1)
-														.getNomeDoToken(),
-										(listaTokens.get(indiceLista - 1)
-												.getLinhaLocalizada()));
+								ex.excecao("219");
 
 								return;
 
@@ -248,12 +239,7 @@ public class Semantico extends ASintatico {
 
 							numeroErro++;
 
-							ex.excecao("Erro sintático: ",
-									"Era esperado um ) depois do token "
-											+ listaTokens.get(indiceLista - 1)
-													.getNomeDoToken(),
-									(listaTokens.get(indiceLista - 1)
-											.getLinhaLocalizada()));
+							ex.excecao("229");
 
 							return;
 
@@ -269,11 +255,7 @@ public class Semantico extends ASintatico {
 
 					numeroErro++;
 
-					ex.excecao("Erro sintático: ",
-							"Era esperado um ( depois do token "
-									+ listaTokens.get(indiceLista - 1)
-											.getNomeDoToken(), (listaTokens
-									.get(indiceLista - 1).getLinhaLocalizada()));
+					ex.excecao("245");
 
 					return;
 
@@ -283,11 +265,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao("Erro sintático: ",
-						"Era esperado um identificador depois do token "
-								+ listaTokens.get(indiceLista - 1)
-										.getNomeDoToken(),
-						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+				ex.excecao("255");
 
 				return;
 
@@ -358,7 +336,7 @@ public class Semantico extends ASintatico {
 
 												consomeToken();
 
-												retorno();
+												retorno(simboloFunc);
 
 												if (numeroErro == 0) {
 
@@ -374,15 +352,7 @@ public class Semantico extends ASintatico {
 
 															numeroErro++;
 
-															ex.excecao(
-																	"Erro sintático: ",
-																	"Era esperado um ; depois do token "
-																			+ listaTokens
-																					.get(indiceLista - 1)
-																					.getNomeDoToken(),
-																	(listaTokens
-																			.get(indiceLista - 1)
-																			.getLinhaLocalizada()));
+															ex.excecao("342");
 
 															return;
 
@@ -392,15 +362,7 @@ public class Semantico extends ASintatico {
 
 														numeroErro++;
 
-														ex.excecao(
-																"Erro sintático: ",
-																"Era esperado um ) depois do token "
-																		+ listaTokens
-																				.get(indiceLista - 1)
-																				.getNomeDoToken(),
-																(listaTokens
-																		.get(indiceLista - 1)
-																		.getLinhaLocalizada()));
+														ex.excecao("352");
 
 														return;
 
@@ -416,15 +378,7 @@ public class Semantico extends ASintatico {
 
 												numeroErro++;
 
-												ex.excecao(
-														"Erro sintático: ",
-														"Era esperado um ( depois do token "
-																+ listaTokens
-																		.get(indiceLista - 1)
-																		.getNomeDoToken(),
-														(listaTokens
-																.get(indiceLista - 1)
-																.getLinhaLocalizada()));
+												ex.excecao("368");
 
 												return;
 
@@ -434,15 +388,7 @@ public class Semantico extends ASintatico {
 
 											numeroErro++;
 
-											ex.excecao(
-													"Erro sintático: ",
-													"Era esperado um retorno depois do token "
-															+ listaTokens
-																	.get(indiceLista - 1)
-																	.getNomeDoToken(),
-													(listaTokens
-															.get(indiceLista - 1)
-															.getLinhaLocalizada()));
+											ex.excecao("378");
 
 											return;
 
@@ -462,15 +408,7 @@ public class Semantico extends ASintatico {
 
 										numeroErro++;
 
-										ex.excecao(
-												"Erro sintático: ",
-												"Era esperado um } depois do token "
-														+ listaTokens
-																.get(indiceLista - 1)
-																.getNomeDoToken(),
-												(listaTokens
-														.get(indiceLista - 1)
-														.getLinhaLocalizada()));
+										ex.excecao("398");
 
 										return;
 
@@ -480,14 +418,7 @@ public class Semantico extends ASintatico {
 
 									numeroErro++;
 
-									ex.excecao(
-											"Erro sintático: ",
-											"Era esperado um { depois do token "
-													+ listaTokens.get(
-															indiceLista - 1)
-															.getNomeDoToken(),
-											(listaTokens.get(indiceLista - 1)
-													.getLinhaLocalizada()));
+									ex.excecao("408");
 
 									return;
 								}
@@ -496,14 +427,7 @@ public class Semantico extends ASintatico {
 
 								numeroErro++;
 
-								ex.excecao(
-										"Erro sintático: ",
-										"Era esperado um ) depois do token "
-												+ listaTokens.get(
-														indiceLista - 1)
-														.getNomeDoToken(),
-										(listaTokens.get(indiceLista - 1)
-												.getLinhaLocalizada()));
+								ex.excecao("417");
 
 								return;
 
@@ -517,15 +441,6 @@ public class Semantico extends ASintatico {
 
 					} else {
 
-						numeroErro++;
-
-						ex.excecao("Erro sintático: ",
-								"Era esperado um ( depois do token "
-										+ listaTokens.get(indiceLista - 1)
-												.getNomeDoToken(), (listaTokens
-										.get(indiceLista - 1)
-										.getLinhaLocalizada()));
-
 						return;
 
 					}
@@ -534,11 +449,7 @@ public class Semantico extends ASintatico {
 
 					numeroErro++;
 
-					ex.excecao("Erro sintático: ",
-							"Era esperado a declaração do identificador da função depois do token "
-									+ listaTokens.get(indiceLista - 1)
-											.getNomeDoToken(), (listaTokens
-									.get(indiceLista - 1).getLinhaLocalizada()));
+					ex.excecao("439");
 
 					return;
 
@@ -548,11 +459,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao("Erro sintático: ",
-						"Era esperado a declaração do tipo de retorno da função depois do token "
-								+ listaTokens.get(indiceLista - 1)
-										.getNomeDoToken(),
-						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+				ex.excecao("449");
 
 				return;
 
@@ -566,20 +473,28 @@ public class Semantico extends ASintatico {
 
 	}
 
-	private void retorno() {
+	private void retorno(Simbolo s) {
 
-		if (comparaLexema(Tag.FALSO) || comparaLexema(Tag.VERDADEIRO)
-				|| comparaLexema(Tag.NUMERICO)) {
+		if (comparaLexema(Tag.FALSO) || comparaLexema(Tag.VERDADEIRO)) {
+
+			consomeToken();
+
+		} else if (comparaLexema(Tag.NUMERICO)) {
 
 			consomeToken();
 
 		} else if (comparaLexema(Tag.IDENTIFICADOR)) {
 
-			Simbolo s = new Simbolo(escopoAtual, null, listaTokens.get(
+			Simbolo c = new Simbolo(escopoAtual, null, listaTokens.get(
 					indiceLista).getNomeDoToken(), null, "VARIAVEL");
 
 			boolean b = TabelaDeSimbolos.getTabelaDeSimbolos()
-					.verificarDeclaracaoVariavel(s);
+					.verificarDeclaracaoVariavel(c);
+
+			String t = TabelaDeSimbolos.getTabelaDeSimbolos()
+					.retornaVariavel(c).getTipoLexema();
+
+			c.setTipo(t);
 
 			if (!b) {
 
@@ -593,9 +508,21 @@ public class Semantico extends ASintatico {
 
 				return;
 
-			} else {
+			} else if (s.getTipoLexema().equals(c.getTipoLexema())) {
 
 				consomeToken();
+
+			} else {
+
+				numeroErro++;
+
+				ex.excecao(
+						"Erro semântico: ",
+						"O retorno da função " + s.getLexema() + " é "
+								+ s.getTipoLexema(),
+						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+
+				return;
 
 			}
 
@@ -638,11 +565,7 @@ public class Semantico extends ASintatico {
 
 			numeroErro++;
 
-			ex.excecao(
-					"Erro sintático: ",
-					"Era esperado a declaração de um tipo depois do token "
-							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
-					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+			ex.excecao("553");
 
 			return null;
 
@@ -679,11 +602,7 @@ public class Semantico extends ASintatico {
 
 			numeroErro++;
 
-			ex.excecao(
-					"Erro sintático: ",
-					"Era esperado uma , depois do token "
-							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
-					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+			ex.excecao("590");
 
 			return null;
 
@@ -706,9 +625,17 @@ public class Semantico extends ASintatico {
 
 			if (comparaLexema(Tag.IDENTIFICADOR)) {
 
-				p = new Parametro(escopoAtual, listaTokens.get(indiceLista - 1)
+				p = new Parametro(escopoAtual + 1, listaTokens.get(indiceLista - 1)
 						.getNomeDoToken(), listaTokens.get(indiceLista)
 						.getNomeDoToken());
+
+				Simbolo v = new Simbolo(p.getEscopo(), listaTokens.get(
+						indiceLista - 1).getNomeDoToken(), listaTokens.get(
+						indiceLista).getNomeDoToken(), null, "VARIAVEL");
+
+				System.out.println("Escopo Atual: " + escopoAtual);
+				
+				TabelaDeSimbolos.getTabelaDeSimbolos().inserirSimbolo(v);
 
 				consomeToken();
 
@@ -716,11 +643,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao("Erro sintático: ",
-						"Era esperado a declaração de um identificador depois do token "
-								+ listaTokens.get(indiceLista - 1)
-										.getNomeDoToken(),
-						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+				ex.excecao("629");
 
 				return null;
 
@@ -730,11 +653,7 @@ public class Semantico extends ASintatico {
 
 			numeroErro++;
 
-			ex.excecao(
-					"Erro sintático: ",
-					"Era esperado a declaração de um tipo depois do token "
-							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
-					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+			ex.excecao("639");
 
 			return null;
 
@@ -759,7 +678,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao("Erro semântico: ",
+				ex.excecao("Erro semântico: 666 ",
 						"Variável do tipo INTEIRO antes do token "
 								+ listaTokens.get(indiceLista - 1)
 										.getNomeDoToken(),
@@ -775,7 +694,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao("Erro semântico: ",
+				ex.excecao("Erro semântico: 682 ",
 						"Variável do tipo INTEIRO antes do token "
 								+ listaTokens.get(indiceLista - 1)
 										.getNomeDoToken(),
@@ -806,7 +725,7 @@ public class Semantico extends ASintatico {
 
 					numeroErro++;
 
-					ex.excecao("Erro semântico: ",
+					ex.excecao("Erro semântico: 713 ",
 							"Procedimento não pode ser atribuido depois do token "
 									+ listaTokens.get(indiceLista - 1)
 											.getNomeDoToken(), (listaTokens
@@ -821,15 +740,15 @@ public class Semantico extends ASintatico {
 				indiceLista--;
 
 				c.setClasse("VARIAVEL");
-
+				
 				boolean d = TabelaDeSimbolos.getTabelaDeSimbolos()
 						.verificarDeclaracaoVariavel(c);
-
+				
 				if (!d) {
 
 					numeroErro++;
 
-					ex.excecao("Erro semântico: ",
+					ex.excecao("Erro semântico: 736 ",
 							"Variável não declarada depois do token "
 									+ listaTokens.get(indiceLista - 1)
 											.getNomeDoToken(), (listaTokens
@@ -852,7 +771,7 @@ public class Semantico extends ASintatico {
 
 					numeroErro++;
 
-					ex.excecao("Erro semântico: ",
+					ex.excecao("Erro semântico: 759 ",
 							"O tipo da variável "
 									+ s.getLexema()
 									+ " diferente"
@@ -873,7 +792,21 @@ public class Semantico extends ASintatico {
 
 			consomeToken();
 
-			expressaoAritmetica();
+			if (!s.getTipoLexema().equals("INTEIRO")) {
+
+				numeroErro++;
+
+				ex.excecao("Erro semântico: 784 ",
+						"Variável do tipo INTEIRO antes do token " + " = ",
+						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+
+				return;
+
+			} else {
+
+				expressaoAritmetica();
+
+			}
 
 			if (numeroErro == 0) {
 
@@ -885,11 +818,7 @@ public class Semantico extends ASintatico {
 
 					numeroErro++;
 
-					ex.excecao("Erro sintático: ",
-							"Era esperado um ) depois do token "
-									+ listaTokens.get(indiceLista - 1)
-											.getNomeDoToken(), (listaTokens
-									.get(indiceLista - 1).getLinhaLocalizada()));
+					ex.excecao("804");
 
 					return;
 
@@ -903,11 +832,7 @@ public class Semantico extends ASintatico {
 
 			numeroErro++;
 
-			ex.excecao(
-					"Erro sintático: ",
-					"Era esperado um valor depois do token "
-							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
-					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+			ex.excecao("818");
 
 			return;
 
@@ -935,11 +860,7 @@ public class Semantico extends ASintatico {
 
 			numeroErro++;
 
-			ex.excecao(
-					"Erro sintático: ",
-					"Era esperado um valor numerico, identificador ou expressão depois do token "
-							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
-					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+			ex.excecao("846");
 
 			return;
 
@@ -965,11 +886,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao("Erro sintático: ",
-						"Era esperado um valor numerico, identificador ou expressão depois do token "
-								+ listaTokens.get(indiceLista - 1)
-										.getNomeDoToken(),
-						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+				ex.excecao("872");
 
 				return;
 
@@ -1009,11 +926,7 @@ public class Semantico extends ASintatico {
 
 			numeroErro++;
 
-			ex.excecao(
-					"Erro sintático: ",
-					"Era esperado um valor numerico, identificador ou expressão depois do token "
-							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
-					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+			ex.excecao("912");
 
 			return;
 
@@ -1044,11 +957,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao("Erro sintático: ",
-						"Era esperado um valor numerico, identificador ou expressão depois do token "
-								+ listaTokens.get(indiceLista - 1)
-										.getNomeDoToken(),
-						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+				ex.excecao("943");
 
 				return;
 
@@ -1058,11 +967,7 @@ public class Semantico extends ASintatico {
 
 			numeroErro++;
 
-			ex.excecao(
-					"Erro sintático: ",
-					"Era esperado um * ou / depois do token "
-							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
-					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+			ex.excecao("953");
 
 			return;
 
@@ -1089,12 +994,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao(
-						"Erro sintático: ",
-						"Era esperado um ) depois do token "
-								+ listaTokens.get(indiceLista - 1)
-										.getNomeDoToken(),
-						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+				ex.excecao("980");
 
 				return;
 
@@ -1118,7 +1018,7 @@ public class Semantico extends ASintatico {
 
 					numeroErro++;
 
-					ex.excecao("Erro semântico: Variável " + s.getLexema(),
+					ex.excecao("Erro semântico : Variável " + s.getLexema(),
 							" não declarada depois do token "
 									+ listaTokens.get(indiceLista - 1)
 											.getNomeDoToken(), (listaTokens
@@ -1131,7 +1031,9 @@ public class Semantico extends ASintatico {
 					numeroErro++;
 
 					ex.excecao("Erro semântico: ",
-							"Variável do tipo INTEIRO antes do token "
+							"Variável "
+									+ s.getLexema()
+									+ " do tipo BOOLEANO depois do token "
 									+ listaTokens.get(indiceLista - 1)
 											.getNomeDoToken(), (listaTokens
 									.get(indiceLista - 1).getLinhaLocalizada()));
@@ -1148,11 +1050,7 @@ public class Semantico extends ASintatico {
 
 			numeroErro++;
 
-			ex.excecao(
-					"Erro sintático: ",
-					"Era esperado um valor numerico, identificador depois do token "
-							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
-					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+			ex.excecao("1036");
 
 			return;
 
@@ -1173,11 +1071,7 @@ public class Semantico extends ASintatico {
 
 			numeroErro++;
 
-			ex.excecao(
-					"Erro sintático: ",
-					"Era esperado um valor numerico, identificador depois do token "
-							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
-					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+			ex.excecao("1059");
 
 			return;
 
@@ -1216,21 +1110,11 @@ public class Semantico extends ASintatico {
 
 			numeroErro++;
 
-			ex.excecao("Erro sintático: ",
-					"Era esperado um identificador antes do token "
-							+ listaTokens.get(indiceLista).getNomeDoToken(),
-					(listaTokens.get(indiceLista).getLinhaLocalizada()));
-
 			com = false;
 
 		} else if (comparaLexema(Tag.ATRIBUICAO)) {
 
 			numeroErro++;
-
-			ex.excecao("Erro sintático: ",
-					"Era esperado um identificador antes do token "
-							+ listaTokens.get(indiceLista).getNomeDoToken(),
-					(listaTokens.get(indiceLista).getLinhaLocalizada()));
 
 			com = false;
 
@@ -1274,12 +1158,7 @@ public class Semantico extends ASintatico {
 
 							numeroErro++;
 
-							ex.excecao("Erro sintático: ",
-									"Era esperado um ; depois do token "
-											+ listaTokens.get(indiceLista - 1)
-													.getNomeDoToken(),
-									(listaTokens.get(indiceLista - 1)
-											.getLinhaLocalizada()));
+							ex.excecao("1146");
 
 							return;
 
@@ -1289,12 +1168,7 @@ public class Semantico extends ASintatico {
 
 						numeroErro++;
 
-						ex.excecao("Erro sintático: ",
-								"Era esperado um ) depois do token "
-										+ listaTokens.get(indiceLista - 1)
-												.getNomeDoToken(), (listaTokens
-										.get(indiceLista - 1)
-										.getLinhaLocalizada()));
+						ex.excecao("1156");
 
 						return;
 
@@ -1310,12 +1184,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao(
-						"Erro sintático: ",
-						"Era esperado um ( depois do token "
-								+ listaTokens.get(indiceLista - 1)
-										.getNomeDoToken(),
-						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+				ex.excecao("1172");
 
 				return;
 
@@ -1400,11 +1269,7 @@ public class Semantico extends ASintatico {
 
 					numeroErro++;
 
-					ex.excecao("Erro sintático: ",
-							"Era esperado um ) depois do token "
-									+ listaTokens.get(indiceLista - 1)
-											.getNomeDoToken(), (listaTokens
-									.get(indiceLista - 1).getLinhaLocalizada()));
+					ex.excecao("1257");
 
 					return;
 
@@ -1418,11 +1283,7 @@ public class Semantico extends ASintatico {
 
 			numeroErro++;
 
-			ex.excecao(
-					"Erro sintático: ",
-					"Era esperado um valor depois do token "
-							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
-					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+			ex.excecao("1271");
 
 			return;
 
@@ -1470,14 +1331,7 @@ public class Semantico extends ASintatico {
 
 									numeroErro++;
 
-									ex.excecao(
-											"Erro sintático: ",
-											"Era esperado o simbolo } depois do token "
-													+ listaTokens.get(
-															indiceLista - 1)
-															.getNomeDoToken(),
-											(listaTokens.get(indiceLista - 1)
-													.getLinhaLocalizada()));
+									ex.excecao("1319");
 
 									return;
 
@@ -1493,12 +1347,7 @@ public class Semantico extends ASintatico {
 
 							numeroErro++;
 
-							ex.excecao("Erro sintático: ",
-									"Era esperado o simbolo { depois do token "
-											+ listaTokens.get(indiceLista - 1)
-													.getNomeDoToken(),
-									(listaTokens.get(indiceLista - 1)
-											.getLinhaLocalizada()));
+							ex.excecao("1335");
 
 							return;
 
@@ -1508,12 +1357,7 @@ public class Semantico extends ASintatico {
 
 						numeroErro++;
 
-						ex.excecao("Erro sintático: ",
-								"Era esperado o simbolo ) depois do token "
-										+ listaTokens.get(indiceLista - 1)
-												.getNomeDoToken(), (listaTokens
-										.get(indiceLista - 1)
-										.getLinhaLocalizada()));
+						ex.excecao("1345");
 
 						return;
 
@@ -1529,11 +1373,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao("Erro sintático: ",
-						"Era esperado o simbolo ( depois do token "
-								+ listaTokens.get(indiceLista - 1)
-										.getNomeDoToken(),
-						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+				ex.excecao("1361");
 
 				return;
 
@@ -1608,16 +1448,6 @@ public class Semantico extends ASintatico {
 
 										numeroErro++;
 
-										ex.excecao(
-												"Erro sintático: ",
-												"Era esperado o simbolo ; depois do token "
-														+ listaTokens
-																.get(indiceLista - 1)
-																.getNomeDoToken(),
-												(listaTokens
-														.get(indiceLista - 1)
-														.getLinhaLocalizada()));
-
 										c = false;
 
 									}
@@ -1636,15 +1466,6 @@ public class Semantico extends ASintatico {
 
 								numeroErro++;
 
-								ex.excecao(
-										"Erro sintático: ",
-										"Era esperado o simbolo } depois do token "
-												+ listaTokens.get(
-														indiceLista - 1)
-														.getNomeDoToken(),
-										(listaTokens.get(indiceLista - 1)
-												.getLinhaLocalizada()));
-
 								c = false;
 
 							}
@@ -1653,13 +1474,6 @@ public class Semantico extends ASintatico {
 
 							numeroErro++;
 
-							ex.excecao("Erro sintático: ",
-									"Era esperado o simbolo { depois do token "
-											+ listaTokens.get(indiceLista - 1)
-													.getNomeDoToken(),
-									(listaTokens.get(indiceLista - 1)
-											.getLinhaLocalizada()));
-
 							c = false;
 
 						}
@@ -1667,13 +1481,6 @@ public class Semantico extends ASintatico {
 					} else {
 
 						numeroErro++;
-
-						ex.excecao("Erro sintático: ",
-								"Era esperado o simbolo ) depois do token "
-										+ listaTokens.get(indiceLista - 1)
-												.getNomeDoToken(), (listaTokens
-										.get(indiceLista - 1)
-										.getLinhaLocalizada()));
 
 						c = false;
 
@@ -1688,12 +1495,6 @@ public class Semantico extends ASintatico {
 			} else {
 
 				numeroErro++;
-
-				ex.excecao("Erro sintático: ",
-						"Era esperado o simbolo ( depois do token "
-								+ listaTokens.get(indiceLista - 1)
-										.getNomeDoToken(),
-						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
 
 				c = false;
 
@@ -1736,12 +1537,7 @@ public class Semantico extends ASintatico {
 
 							numeroErro++;
 
-							ex.excecao("Erro sintático: ",
-									"Era esperado o simbolo ; depois do token "
-											+ listaTokens.get(indiceLista - 1)
-													.getNomeDoToken(),
-									(listaTokens.get(indiceLista - 1)
-											.getLinhaLocalizada()));
+							ex.excecao("1525");
 
 							return;
 
@@ -1763,11 +1559,7 @@ public class Semantico extends ASintatico {
 
 					numeroErro++;
 
-					ex.excecao("Erro sintático: ",
-							"Era esperado o simbolo } depois do token "
-									+ listaTokens.get(indiceLista - 1)
-											.getNomeDoToken(), (listaTokens
-									.get(indiceLista - 1).getLinhaLocalizada()));
+					ex.excecao("1547");
 
 					return;
 
@@ -1781,11 +1573,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao("Erro sintático: ",
-						"Era esperado o simbolo { depois do token "
-								+ listaTokens.get(indiceLista - 1)
-										.getNomeDoToken(),
-						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+				ex.excecao("1561");
 
 				return;
 
@@ -1845,11 +1633,7 @@ public class Semantico extends ASintatico {
 
 					numeroErro++;
 
-					ex.excecao("Erro sintático: ",
-							"Era esperado um ; depois do token "
-									+ listaTokens.get(indiceLista - 1)
-											.getNomeDoToken(), (listaTokens
-									.get(indiceLista - 1).getLinhaLocalizada()));
+					ex.excecao("1621");
 
 					return;
 
@@ -1859,11 +1643,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao("Erro sintático: ",
-						"Era esperado um identificador depois do token "
-								+ listaTokens.get(indiceLista - 1)
-										.getNomeDoToken(),
-						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+				ex.excecao("1631");
 
 				return;
 
@@ -1902,11 +1682,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao("Erro sintático: ",
-						"Era esperado um = ou ( depois do token "
-								+ listaTokens.get(indiceLista - 1)
-										.getNomeDoToken(),
-						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+				ex.excecao("1670");
 
 				return;
 
@@ -1977,7 +1753,40 @@ public class Semantico extends ASintatico {
 
 					} else {
 
-						listaArgumentos();
+						s.setListaParametros(listaArgumentos(t));
+
+						int j = 0;
+
+						while (j < s.getListaParametros().size()) {
+
+							if (s.getListaParametros()
+									.get(j)
+									.getNomeDoTipo()
+									.equals(r.getListaParametros().get(j)
+											.getNomeDoTipo())) {
+
+								System.out.println("ok");
+
+							} else {
+
+								numeroErro++;
+
+								ex.excecao(
+										"Erro semântico: ",
+										"Tipo do parâmetro não equivalente "
+												+ listaTokens.get(
+														indiceLista - 1)
+														.getNomeDoToken(),
+										(listaTokens.get(indiceLista - 1)
+												.getLinhaLocalizada()));
+
+								return;
+
+							}
+
+							j++;
+
+						}
 
 					}
 
@@ -1985,10 +1794,9 @@ public class Semantico extends ASintatico {
 
 					numeroErro++;
 
-					ex.excecao("Erro semântico: ",
-							"Função ou Procedimento não declarada ",
-							(listaTokens.get(indiceLista - 1)
-									.getLinhaLocalizada()));
+					ex.excecao("Erro semântico: ", s.getLexema()
+							+ " não declarada ", (listaTokens
+							.get(indiceLista - 1).getLinhaLocalizada()));
 
 					return;
 
@@ -2008,12 +1816,7 @@ public class Semantico extends ASintatico {
 
 							numeroErro++;
 
-							ex.excecao("Erro sintático: ",
-									"Era esperado um ; depois do token "
-											+ listaTokens.get(indiceLista - 1)
-													.getNomeDoToken(),
-									(listaTokens.get(indiceLista - 1)
-											.getLinhaLocalizada()));
+							ex.excecao("1771");
 
 							return;
 
@@ -2023,12 +1826,7 @@ public class Semantico extends ASintatico {
 
 						numeroErro++;
 
-						ex.excecao("Erro sintático: ",
-								"Era esperado um ) depois do token "
-										+ listaTokens.get(indiceLista - 1)
-												.getNomeDoToken(), (listaTokens
-										.get(indiceLista - 1)
-										.getLinhaLocalizada()));
+						ex.excecao("1781");
 
 						return;
 
@@ -2037,6 +1835,8 @@ public class Semantico extends ASintatico {
 				} else {
 
 					numeroErro++;
+
+					ex.excecao("1791");
 
 					return;
 
@@ -2050,16 +1850,18 @@ public class Semantico extends ASintatico {
 
 	}
 
-	private void listaArgumentos() {
+	private List<Parametro> listaArgumentos(Simbolo s) {
+
+		List<Parametro> listaParametros = new ArrayList<Parametro>();
 
 		if (comparaLexema(Tag.IDENTIFICADOR) || comparaLexema(Tag.NUMERICO)
 				|| comparaLexema(Tag.VERDADEIRO) || comparaLexema(Tag.FALSO)) {
 
-			argumentos();
+			listaParametros.add(argumentos(s));
 
 			if (comparaLexema(',')) {
 
-				listaArgumentosAuxiliar();
+				listaParametros.add(listaArgumentosAuxiliar(s));
 
 			} else {
 
@@ -2069,24 +1871,65 @@ public class Semantico extends ASintatico {
 
 			numeroErro++;
 
-			ex.excecao(
-					"Erro sintático: ",
-					"Era esperado um argumento depois do token "
-							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
-					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+			ex.excecao("1824");
 
-			return;
+			return null;
 
 		} else {
 
 		}
 
+		return listaParametros;
+
 	}
 
-	private void argumentos() {
+	private Parametro argumentos(Simbolo s) {
 
-		if (comparaLexema(Tag.IDENTIFICADOR) || comparaLexema(Tag.NUMERICO)
-				|| comparaLexema(Tag.VERDADEIRO) || comparaLexema(Tag.FALSO)) {
+		Parametro p = null;
+
+		if (comparaLexema(Tag.VERDADEIRO) || comparaLexema(Tag.FALSO)) {
+
+			p = new Parametro(escopoAtual, "BOOLEANO", listaTokens.get(
+					indiceLista).getNomeDoToken());
+
+			consomeToken();
+
+		} else if (comparaLexema(Tag.IDENTIFICADOR)) {
+
+			Simbolo c = new Simbolo(escopoAtual, null, listaTokens.get(
+					indiceLista).getNomeDoToken(), null, "VARIAVEL");
+
+			Simbolo b = TabelaDeSimbolos.getTabelaDeSimbolos().retornaVariavel(
+					c);
+
+			if (b == null) {
+
+				numeroErro++;
+
+				ex.excecao("Erro semântico: ", "Variável não declarada "
+						+ listaTokens.get(indiceLista).getNomeDoToken(),
+						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+
+				return null;
+
+			} else {
+
+				c.setTipo(b.getTipoLexema());
+
+				p = new Parametro(escopoAtual, b.getTipoLexema(), listaTokens
+						.get(indiceLista).getNomeDoToken());
+
+				System.out.println(p.getLexema());
+
+				consomeToken();
+			}
+
+		} else if (comparaLexema(Tag.NUMERICO)) {
+
+			p = new Parametro(escopoAtual, "INTEIRO", listaTokens.get(
+					indiceLista).getNomeDoToken());
+
+			System.out.println(p.getNomeDoTipo());
 
 			consomeToken();
 
@@ -2094,29 +1937,29 @@ public class Semantico extends ASintatico {
 
 			numeroErro++;
 
-			ex.excecao(
-					"Erro sintático: ",
-					"Era esperado um argumento depois do token "
-							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
-					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+			ex.excecao("1875");
 
-			return;
+			return null;
 
 		}
 
+		return p;
+
 	}
 
-	private void listaArgumentosAuxiliar() {
+	private Parametro listaArgumentosAuxiliar(Simbolo s) {
+
+		Parametro p = null;
 
 		if (comparaLexema(',')) {
 
 			consomeToken();
 
-			argumentos();
+			p = argumentos(s);
 
 			if (comparaLexema(',')) {
 
-				listaArgumentosAuxiliar();
+				listaArgumentosAuxiliar(s);
 
 			} else {
 
@@ -2126,15 +1969,13 @@ public class Semantico extends ASintatico {
 
 			numeroErro++;
 
-			ex.excecao(
-					"Erro sintático: ",
-					"Era esperado uma , depois do token "
-							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
-					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+			ex.excecao("1903");
 
-			return;
+			return null;
 
 		}
+
+		return p;
 
 	}
 
@@ -2155,24 +1996,27 @@ public class Semantico extends ASintatico {
 
 					numeroErro++;
 
-					ex.excecao("Erro semântico: ",
-							"Variável não declarada depois do token "
+					ex.excecao(
+							"Erro semântico: 1985 ",
+							"Variável não declarada "
 									+ listaTokens.get(indiceLista - 1)
 											.getNomeDoToken(), (listaTokens
 									.get(indiceLista - 1).getLinhaLocalizada()));
 
 					return;
 
+				} else {
+
+					String t = TabelaDeSimbolos.getTabelaDeSimbolos()
+							.retornaVariavel(s).getTipoLexema();
+
+					s.setTipo(t);
+
+					consomeToken();
+
+					valor(s);
+
 				}
-
-				String t = TabelaDeSimbolos.getTabelaDeSimbolos()
-						.retornaVariavel(s).getTipoLexema();
-
-				s.setTipo(t);
-
-				consomeToken();
-
-				valor(s);
 
 				if (numeroErro == 0) {
 
@@ -2184,12 +2028,7 @@ public class Semantico extends ASintatico {
 
 						numeroErro++;
 
-						ex.excecao("Erro sintático: ",
-								"Era esperado ; depois do token "
-										+ listaTokens.get(indiceLista - 1)
-												.getNomeDoToken(), (listaTokens
-										.get(indiceLista - 1)
-										.getLinhaLocalizada()));
+						ex.excecao("1960");
 
 						return;
 
@@ -2205,11 +2044,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao("Erro sintático: ",
-						"Era esperado um valor depois do token "
-								+ listaTokens.get(indiceLista - 1)
-										.getNomeDoToken(),
-						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+				ex.excecao("1976");
 
 				return;
 
@@ -2263,14 +2098,7 @@ public class Semantico extends ASintatico {
 
 									numeroErro++;
 
-									ex.excecao(
-											"Erro sintático: ",
-											"Era esperado o simbolo } depois do token "
-													+ listaTokens.get(
-															indiceLista - 1)
-															.getNomeDoToken(),
-											(listaTokens.get(indiceLista - 1)
-													.getLinhaLocalizada()));
+									ex.excecao("2030");
 
 									return;
 
@@ -2282,12 +2110,7 @@ public class Semantico extends ASintatico {
 
 							numeroErro++;
 
-							ex.excecao("Erro sintático: ",
-									"Era esperado o simbolo { depois do token "
-											+ listaTokens.get(indiceLista - 1)
-													.getNomeDoToken(),
-									(listaTokens.get(indiceLista - 1)
-											.getLinhaLocalizada()));
+							ex.excecao("2042");
 
 							return;
 
@@ -2297,12 +2120,7 @@ public class Semantico extends ASintatico {
 
 						numeroErro++;
 
-						ex.excecao("Erro sintático: ",
-								"Era esperado o simbolo ) depois do token "
-										+ listaTokens.get(indiceLista - 1)
-												.getNomeDoToken(), (listaTokens
-										.get(indiceLista - 1)
-										.getLinhaLocalizada()));
+						ex.excecao("2052");
 
 						return;
 
@@ -2318,11 +2136,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao("Erro sintático: ",
-						"Era esperado o simbolo ( depois do token "
-								+ listaTokens.get(indiceLista - 1)
-										.getNomeDoToken(),
-						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+				ex.excecao("2068");
 
 				return;
 
@@ -2336,12 +2150,7 @@ public class Semantico extends ASintatico {
 
 	private void condicao() {
 
-		if (comparaLexema(Tag.NUMERICO) || comparaLexema(Tag.VERDADEIRO)
-				|| comparaLexema(Tag.FALSO)) {
-
-			consomeToken();
-
-		} else if (comparaLexema(Tag.IDENTIFICADOR)) {
+		if (comparaLexema(Tag.IDENTIFICADOR)) {
 
 			Simbolo s = new Simbolo(escopoAtual, null, listaTokens.get(
 					indiceLista).getNomeDoToken(), null, "VARIAVEL");
@@ -2350,6 +2159,23 @@ public class Semantico extends ASintatico {
 					.verificarDeclaracaoVariavel(s);
 
 			if (b) {
+
+				Simbolo c = TabelaDeSimbolos.getTabelaDeSimbolos()
+						.retornaVariavel(s);
+
+				s.setTipo(c.getTipo());
+
+				if (!s.getTipoLexema().equals("BOOLEANO")) {
+
+					numeroErro++;
+
+					ex.excecao("Erro semântico: ", "Variável " + c.getLexema()
+							+ " do tipo " + c.getTipoLexema(), (listaTokens
+							.get(indiceLista - 1).getLinhaLocalizada()));
+
+					return;
+
+				}
 
 				indiceLista++;
 
@@ -2377,11 +2203,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao("Erro sintático: ",
-						"Era esperado uma expressão lógica depois do token "
-								+ listaTokens.get(indiceLista - 1)
-										.getNomeDoToken(),
-						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+				ex.excecao("2135");
 
 				return;
 
@@ -2391,11 +2213,7 @@ public class Semantico extends ASintatico {
 
 			numeroErro++;
 
-			ex.excecao(
-					"Erro sintático: ",
-					"Era esperado uma condição depois do token "
-							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
-					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+			ex.excecao("2145");
 
 			return;
 
@@ -2433,12 +2251,7 @@ public class Semantico extends ASintatico {
 
 						numeroErro++;
 
-						ex.excecao("Erro sintático: ",
-								"Era esperado o simbolo } depois do token "
-										+ listaTokens.get(indiceLista - 1)
-												.getNomeDoToken(), (listaTokens
-										.get(indiceLista - 1)
-										.getLinhaLocalizada()));
+						ex.excecao("2183");
 
 						return;
 
@@ -2458,11 +2271,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao("Erro sintático: ",
-						"Era esperado o simbolo { depois do token "
-								+ listaTokens.get(indiceLista - 1)
-										.getNomeDoToken(),
-						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+				ex.excecao("2203");
 
 				return;
 
@@ -2482,6 +2291,47 @@ public class Semantico extends ASintatico {
 
 			if (comparaLexema(Tag.NUMERICO) || comparaLexema(Tag.IDENTIFICADOR)) {
 
+				if (comparaLexema(Tag.IDENTIFICADOR)) {
+
+					Simbolo s = new Simbolo(escopoAtual, null, listaTokens.get(
+							indiceLista).getNomeDoToken(), null, "VARIAVEL");
+
+					boolean b = TabelaDeSimbolos.getTabelaDeSimbolos()
+							.verificarDeclaracaoVariavel(s);
+
+					Simbolo t = TabelaDeSimbolos.getTabelaDeSimbolos()
+							.retornaVariavel(s);
+
+					if (!b) {
+
+						numeroErro++;
+
+						ex.excecao("Erro semântico: Variável " + s.getLexema(),
+								" não declarada depois do token "
+										+ listaTokens.get(indiceLista - 1)
+												.getNomeDoToken(), (listaTokens
+										.get(indiceLista - 1)
+										.getLinhaLocalizada()));
+
+						return;
+
+					} else if (t.getTipoLexema().equals("BOOLEANO")) {
+
+						numeroErro++;
+
+						ex.excecao("Erro semântico: ",
+								"Variável do tipo INTEIRO antes do token "
+										+ listaTokens.get(indiceLista - 1)
+												.getNomeDoToken(), (listaTokens
+										.get(indiceLista - 1)
+										.getLinhaLocalizada()));
+
+						return;
+
+					}
+
+				}
+
 				consomeToken();
 
 				if (comparaLexema(Tag.MENOR_Q) || comparaLexema(Tag.MAIOR_Q)
@@ -2494,11 +2344,12 @@ public class Semantico extends ASintatico {
 
 					if (comparaLexema(Tag.NUMERICO)
 							|| comparaLexema(Tag.IDENTIFICADOR)) {
-						
+
 						if (comparaLexema(Tag.IDENTIFICADOR)) {
 
-							Simbolo s = new Simbolo(escopoAtual, null, listaTokens.get(
-									indiceLista).getNomeDoToken(), null, "VARIAVEL");
+							Simbolo s = new Simbolo(escopoAtual, null,
+									listaTokens.get(indiceLista)
+											.getNomeDoToken(), null, "VARIAVEL");
 
 							boolean b = TabelaDeSimbolos.getTabelaDeSimbolos()
 									.verificarDeclaracaoVariavel(s);
@@ -2510,11 +2361,15 @@ public class Semantico extends ASintatico {
 
 								numeroErro++;
 
-								ex.excecao("Erro semântico: Variável " + s.getLexema(),
+								ex.excecao(
+										"Erro semântico: Variável "
+												+ s.getLexema(),
 										" não declarada depois do token "
-												+ listaTokens.get(indiceLista - 1)
-														.getNomeDoToken(), (listaTokens
-												.get(indiceLista - 1).getLinhaLocalizada()));
+												+ listaTokens.get(
+														indiceLista - 1)
+														.getNomeDoToken(),
+										(listaTokens.get(indiceLista - 1)
+												.getLinhaLocalizada()));
 
 								return;
 
@@ -2522,11 +2377,14 @@ public class Semantico extends ASintatico {
 
 								numeroErro++;
 
-								ex.excecao("Erro semântico: ",
+								ex.excecao(
+										"Erro semântico: ",
 										"Variável do tipo INTEIRO antes do token "
-												+ listaTokens.get(indiceLista - 1)
-														.getNomeDoToken(), (listaTokens
-												.get(indiceLista - 1).getLinhaLocalizada()));
+												+ listaTokens.get(
+														indiceLista - 1)
+														.getNomeDoToken(),
+										(listaTokens.get(indiceLista - 1)
+												.getLinhaLocalizada()));
 
 								return;
 
@@ -2544,12 +2402,7 @@ public class Semantico extends ASintatico {
 
 							numeroErro++;
 
-							ex.excecao("Erro sintático: ",
-									"Era esperado um ) depois do token "
-											+ listaTokens.get(indiceLista - 1)
-													.getNomeDoToken(),
-									(listaTokens.get(indiceLista - 1)
-											.getLinhaLocalizada()));
+							ex.excecao("2293");
 
 							return;
 
@@ -2559,12 +2412,7 @@ public class Semantico extends ASintatico {
 
 						numeroErro++;
 
-						ex.excecao("Erro sintático: ",
-								"Era esperado um valor numerico ou identificador depois do token "
-										+ listaTokens.get(indiceLista - 1)
-												.getNomeDoToken(), (listaTokens
-										.get(indiceLista - 1)
-										.getLinhaLocalizada()));
+						ex.excecao("2303");
 
 						return;
 
@@ -2574,11 +2422,7 @@ public class Semantico extends ASintatico {
 
 					numeroErro++;
 
-					ex.excecao("Erro sintático: ",
-							"Era esperado um operador lógico depois do token "
-									+ listaTokens.get(indiceLista - 1)
-											.getNomeDoToken(), (listaTokens
-									.get(indiceLista - 1).getLinhaLocalizada()));
+					ex.excecao("2313");
 
 					return;
 
@@ -2588,11 +2432,7 @@ public class Semantico extends ASintatico {
 
 				numeroErro++;
 
-				ex.excecao("Erro sintático: ",
-						"Era esperado um valor numerico ou identificador depois do token "
-								+ listaTokens.get(indiceLista - 1)
-										.getNomeDoToken(),
-						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
+				ex.excecao("2323");
 
 				return;
 

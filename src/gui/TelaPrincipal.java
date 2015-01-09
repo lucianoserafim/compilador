@@ -84,24 +84,43 @@ public class TelaPrincipal extends JFrame {
 						+ "INTEIRO  x;\n\n"
 						+ "x = (a + b + (5 * 3));\n\n"
 						+ "}\n\n"
-						+ "FUNCAO INTEIRO testefuncao(INTEIRO c){\n\nINTEIRO d;\n\nRETORNA (d);\n\n}\n\n"
-						+ "INICIO\n\n"
+						+ "FUNCAO INTEIRO testefuncao(INTEIRO c){\n\n"
+						+ "INTEIRO d;\n\n"
+						+ "d = c;\n\n"
+						+ "RETORNA (d);\n\n}\n\n"
+					    + "INICIO\n\n"
 						+ "INTEIRO a;\n\n"
 						+ "INTEIRO b;\n\n"
 						+ "a = 5;\n\n"
+						+ "b = 10;\n\n"
+						+ "b = (a + b);\n\n"
+						+ "BOOLEANO c;\n\n"
+						+ "BOOLEANO d;\n\n"
+						+ "c = FALSO;\n\n"
+						+ "d = VERDADEIRO;\n\n"
+						+ "INTEIRO e;\n\n"
+						+ "INTEIRO k;\n\n"
 						+ "testefuncao(e);\n\n"
 						+ "testeproced(a,k);\n\n"
-						+ "SE(a){"
+						+ "SE(c){"
 						+ "\n\nINTEIRO idade;\n\n"
 						+ "idade = 5;"
 						+ "\n\n}"
-						+ "SENAO SE(a){\n\n"
+						+ "SENAO SE(d){\n\n"
 						+ "INTEIRO idade;\n\n"
 						+ "idade = 5;\n\n"
 						+ "IMPRIME(idade);\n\n"
 						+ "}\n\n"
-						+ "ENQUANTO((a < b)){\n\nSE(FALSO){\n\nBOOLEANO f;\n\n}SENAO SE(a){\n\nf = FALSO;\n\n}\n\n}\n\n"
-						+ "testeproced(a,b);" 
+						+ "ENQUANTO((a < b)){\n\n"
+						+ "INTEIRO x;\n\n"
+						+ "INTEIRO y;\n\n"
+						+ "x = (x + 1);\n\n"
+						+ "y = 100;\n\n"
+						+ "SE((x == y)){\n\n"
+						+ "PARE;\n\n}SENAO{\n\n"
+						+ "CONTINUE;\n\n"
+						+ "}\n\n"
+						+ "}\n\n"
 						+ "\n\nFIM");
 
 		textPaneCodigo.setBorder(new Linhas());
@@ -292,6 +311,14 @@ public class TelaPrincipal extends JFrame {
 		btnSemantica.setBounds(396, 542, 194, 48);
 		btnSemantica.disable();
 		contentPane.add(btnSemantica);
+		
+		Button btnGerarCodigo = new Button("Gerar código");
+		btnGerarCodigo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnGerarCodigo.setBounds(196, 542, 194, 48);
+		contentPane.add(btnGerarCodigo);
 
 	}
 

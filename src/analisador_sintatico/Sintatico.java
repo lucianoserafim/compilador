@@ -683,9 +683,17 @@ public class Sintatico extends ASintatico {
 
 			if (comparaLexema(Tag.IDENTIFICADOR)) {
 
-				p = new Parametro(escopoAtual, listaTokens.get(indiceLista - 1)
+				p = new Parametro(escopoAtual + 1, listaTokens.get(indiceLista - 1)
 						.getNomeDoToken(), listaTokens.get(indiceLista)
 						.getNomeDoToken());
+				
+				Simbolo v = new Simbolo(p.getEscopo(), listaTokens.get(
+						indiceLista - 1).getNomeDoToken(), listaTokens.get(
+						indiceLista).getNomeDoToken(), null, "VARIAVEL");
+				
+				System.out.println("Escopo Atual: " + escopoAtual);
+				
+				TabelaDeSimbolos.getTabelaDeSimbolos().inserirSimbolo(v);
 
 				consomeToken();
 

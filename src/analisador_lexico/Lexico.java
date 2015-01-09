@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import excecao.Excecao;
 import simbolos.TabelaDeSimbolos;
 import tokens.Numerico;
@@ -519,6 +521,8 @@ public class Lexico {
 
 						Token t = new Token(getPalavraReservada("==").tag,
 								linha);
+						
+						t.setNomeDoToken("==");
 
 						listaTokens.add(t);
 

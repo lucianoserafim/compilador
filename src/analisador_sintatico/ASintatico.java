@@ -57,6 +57,13 @@ public abstract class ASintatico {
 		listaTokens = l;
 
 	}// public Sintatico(List<Token> l) {}
+	
+	/*
+	 * Contrutor
+	 */
+	public ASintatico() {
+
+	}// public Sintatico(List<Token> l) {}
 
 	/*
 	 * Metodo que verifica se o token existe na lista de tokes. Se existir é
