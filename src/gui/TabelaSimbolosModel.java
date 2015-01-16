@@ -19,14 +19,14 @@ public class TabelaSimbolosModel extends AbstractTableModel {
 	public int getRowCount() {
 
 		return lista.size();
-		
+
 	}
 
 	@Override
 	public int getColumnCount() {
 
-		return 5;
-		
+		return 6;
+
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class TabelaSimbolosModel extends AbstractTableModel {
 		Simbolo n = lista.get(rowIndex);
 
 		switch (columnIndex) {
-		
+
 		case 0:
 
 			return n.getLexema();
@@ -67,9 +67,9 @@ public class TabelaSimbolosModel extends AbstractTableModel {
 				return (n.getListaParametros());
 
 			}
-			
+
 		case 4:
-			
+
 			if (n.getClasse() == null) {
 
 				return "---";
@@ -80,10 +80,22 @@ public class TabelaSimbolosModel extends AbstractTableModel {
 
 			}
 
+		case 5:
+
+			if (n.getValor() == null) {
+
+				return "---";
+
+			} else {
+
+				return (n.getValor() + "");
+
+			}
+
 		}
 
 		return null;
-		
+
 	}
 
 	@Override
@@ -108,14 +120,17 @@ public class TabelaSimbolosModel extends AbstractTableModel {
 			return "Lista de Parametros";
 
 		case 4:
-			
+
 			return "Classe";
-					
+			
+		case 5:
+
+			return "Valor";
+
 		}
 
 		return null;
 
 	}
-
 
 }

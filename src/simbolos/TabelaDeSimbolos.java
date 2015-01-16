@@ -3,7 +3,6 @@ package simbolos;
 import java.util.ArrayList;
 import java.util.List;
 
-import analisador_sintatico.ASintatico;
 import excecao.Excecao;
 
 public class TabelaDeSimbolos {
@@ -32,8 +31,34 @@ public class TabelaDeSimbolos {
 	}
 
 	public void inserirSimbolo(Simbolo s) {
+		
+		Simbolo a = retornaVariavel(s);
 
 		listaDeSimbolos.add(s);
+
+	}
+
+	public void atualizarSimbolo(Simbolo s) {
+		
+		for (int i = 0; i < listaDeSimbolos.size(); i++) {
+
+			if (s.getLexema().equals(listaDeSimbolos.get(i).getLexema())
+					&& ((listaDeSimbolos.get(i).getEscopo() == (s.getEscopo()) || listaDeSimbolos
+							.get(i).getEscopo() == 0))
+					&& (s.getClasse().equals("VARIAVEL") || s.getClasse().equals("PARAMETRO"))) {
+				
+				Simbolo a = retornaVariavel(s);
+				
+				listaDeSimbolos.remove(i);
+				
+				a.setValor(s.getValor());
+				
+				listaDeSimbolos.add(i, a);
+				
+				break;
+				
+			}
+		}
 
 	}
 
@@ -44,10 +69,12 @@ public class TabelaDeSimbolos {
 		for (int i = 0; i < listaDeSimbolos.size(); i++) {
 
 			if (s.getLexema().equals(listaDeSimbolos.get(i).getLexema())
-					&& (listaDeSimbolos.get(i).getEscopo() == (s.getEscopo()))
+					&& ((listaDeSimbolos.get(i).getEscopo() == (s.getEscopo()) || listaDeSimbolos
+							.get(i).getEscopo() == 0))
 					&& s.getClasse().equals("VARIAVEL")) {
-				
+
 				return true;
+
 			}
 		}
 
@@ -59,9 +86,10 @@ public class TabelaDeSimbolos {
 		for (int i = 0; i < listaDeSimbolos.size(); i++) {
 
 			if (s.getLexema().equals(listaDeSimbolos.get(i).getLexema())
-					&& (listaDeSimbolos.get(i).getEscopo() == (s.getEscopo()))
-					&& s.getClasse().equals("VARIAVEL")) {
-								
+					&& ((listaDeSimbolos.get(i).getEscopo() == (s.getEscopo()) || listaDeSimbolos
+							.get(i).getEscopo() == 0))
+					&& (s.getClasse().equals("VARIAVEL") || s.getClasse().equals("PARAMETRO"))) {
+
 				return listaDeSimbolos.get(i);
 			}
 		}
@@ -83,7 +111,7 @@ public class TabelaDeSimbolos {
 
 		return null;
 	}
-	
+
 	public Simbolo retornaFuncProced(Simbolo s) {
 
 		for (int i = 0; i < listaDeSimbolos.size(); i++) {

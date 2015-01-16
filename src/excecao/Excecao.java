@@ -3,6 +3,8 @@ package excecao;
 public class Excecao {
 
 	public static String erro = "";
+	
+	public static String codigoIntermediario = "";
 
 	public Excecao() {
 
@@ -17,6 +19,12 @@ public class Excecao {
 	public void excecao(String s) {
 
 		erro = erro + s + "\n";
+
+	}
+	
+	public void codigoInt(String s) {
+
+		codigoIntermediario = codigoIntermediario + s + "\n\n";
 
 	}
 

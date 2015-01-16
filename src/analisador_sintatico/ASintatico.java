@@ -24,6 +24,11 @@ public abstract class ASintatico {
 	protected int contaEscopo = 0;
 
 	/*
+	 * Variável que conta o número de escopos
+	 */
+	protected String codigoTresEnderecos = "";
+
+	/*
 	 * Variável que mostra o escopo atualizado
 	 */
 	protected int escopoAtual = 0;
@@ -32,6 +37,21 @@ public abstract class ASintatico {
 	 * Indice que percorre a list de tokens
 	 */
 	protected int indiceLista = 0;
+
+	/*
+	 * Indice que conta o numero de labels
+	 */
+	protected int label = 0;
+
+	/*
+	 * Indice que conta o numero de labels
+	 */
+	protected int variavel = 0;
+
+	/*
+	 * Indice que conta o numero de labels
+	 */
+	protected int labelLaco = 0;
 
 	/*
 	 * Lista que recebe a lista de tokens da análise léxica
@@ -47,7 +67,7 @@ public abstract class ASintatico {
 	 * Verifica se é uma função ou procedimento, se for um procedimento não pode
 	 * ser atribuida
 	 */
-	protected int isProced = 0;
+	protected int isProcedFunc = 0;
 
 	/*
 	 * Contrutor
@@ -57,7 +77,7 @@ public abstract class ASintatico {
 		listaTokens = l;
 
 	}// public Sintatico(List<Token> l) {}
-	
+
 	/*
 	 * Contrutor
 	 */
@@ -148,6 +168,40 @@ public abstract class ASintatico {
 		} catch (Exception e) {
 
 		}
+
+	}
+
+	private void desempilhaLexemaGlobal() {
+
+		escopo.pop();
+
+		try {
+
+			escopoAtual = escopo.peek();
+
+		} catch (Exception e) {
+
+		}
+
+	}
+
+	private void empilhaLexemaGlobal() {
+
+		escopo.push(0);
+
+		try {
+
+			escopoAtual = escopo.peek();
+
+		} catch (Exception e) {
+
+		}
+
+	}
+
+	public int retornaEscopo(int i, int j) {
+
+		return i + j;
 
 	}
 

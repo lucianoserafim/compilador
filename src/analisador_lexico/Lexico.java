@@ -27,6 +27,8 @@ public class Lexico {
 	 */
 	Excecao ex = new Excecao();
 
+	int e = 0;
+
 	/*
 	 * Código passado para a anáĺise
 	 */
@@ -240,12 +242,14 @@ public class Lexico {
 	 * análisador sintático
 	 */
 	public List<Token> scanear() {
-		
+
 		TabelaDeSimbolos.getTabelaDeSimbolos().getListaDeSimbolos().clear();
 
 		ex.erro = "";
 
 		if (codigoFonte.equals("")) {
+
+			e++;
 
 			ex.excecao("Análise léxica aceita. Palavra vazia.");
 
@@ -285,6 +289,8 @@ public class Lexico {
 
 					if (isMinuscula(lookAhead) || isNumerico(lookAhead)) {
 
+						e++;
+
 						ex.excecao(
 								"Erro léxico: A palavra esperada não é reservada : ",
 								lexema, linha);
@@ -301,6 +307,8 @@ public class Lexico {
 						listaTokens.add(t);
 
 					} else {
+
+						e++;
 
 						ex.excecao("Erro léxico: A palavra não é reservada : ",
 								lexema, linha);
@@ -325,8 +333,10 @@ public class Lexico {
 
 					if (isMaiuscula(lookAhead) || isNumerico(lookAhead)) {
 
-						ex.excecao("Erro léxico: Era esperado um: ", lexema,
-								linha);
+						e++;
+
+						ex.excecao("Erro léxico: Era esperado um: ", lexema
+								+ " : Palavra não é um identificador", linha);
 
 						return null;
 
@@ -355,6 +365,8 @@ public class Lexico {
 					}
 
 					if (isMaiuscula(lookAhead) || isMinuscula(lookAhead)) {
+
+						e++;
 
 						ex.excecao(
 								"Erro léxico: A palavra não é um númerico : ",
@@ -430,6 +442,8 @@ public class Lexico {
 
 					} else {
 
+						e++;
+
 						ex.excecao("Erro léxico: Era esperado o simbolo : ",
 								"=", linha);
 
@@ -461,6 +475,8 @@ public class Lexico {
 						listaTokens.add(t);
 
 					} else {
+
+						e++;
 
 						ex.excecao(
 								"Erro léxico: Era esperado o simbolo ou um espaço em branco : ",
@@ -495,6 +511,8 @@ public class Lexico {
 
 					} else {
 
+						e++;
+
 						ex.excecao(
 								"Erro léxico: Era esperado o simbolo ou espaço em branco : ",
 								"=", linha);
@@ -521,12 +539,14 @@ public class Lexico {
 
 						Token t = new Token(getPalavraReservada("==").tag,
 								linha);
-						
+
 						t.setNomeDoToken("==");
 
 						listaTokens.add(t);
 
 					} else {
+
+						e++;
 
 						ex.excecao(
 								"Erro léxico: Era esperado o simbolo ou espaço em branco : ",
@@ -545,11 +565,11 @@ public class Lexico {
 		Token t = new Token(getPalavraReservada("$").tag, linha);
 
 		listaTokens.add(t);
-		
+
 		ex.excecao("Análise léxica aceita.");
 
 		return listaTokens;
 
 	}// scanear() {}
-	
+
 }// Lexico {}

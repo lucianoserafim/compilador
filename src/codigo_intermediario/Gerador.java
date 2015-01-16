@@ -1,4 +1,4 @@
-package analisador_sintatico;
+package codigo_intermediario;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,7 @@ import simbolos.Simbolo;
 import simbolos.TabelaDeSimbolos;
 import tokens.Tag;
 import tokens.Token;
+import analisador_sintatico.ASintatico;
 import excecao.Excecao;
 
 /**
@@ -16,9 +17,9 @@ import excecao.Excecao;
  * @author luciano
  *
  */
-public class Sintatico extends ASintatico {
+public class Gerador extends ASintatico {
 
-	public Sintatico(List<Token> l) {
+	public Gerador(List<Token> l) {
 
 		super(l);
 
@@ -32,10 +33,16 @@ public class Sintatico extends ASintatico {
 	/*
 	 * Produção <principal>::=
 	 */
-	public void principalSintatico() {
+	public void principalGerador() {
 
 		ex.erro = "";
-		ex.codigoIntermediario = "";
+
+		/*
+		 * Limpa contadores
+		 */
+		escopo.clear();
+		escopoAtual = 0;
+		contaEscopo = 0;
 
 		/*
 		 * Verifica se a lista está vazia. Se a lista estiver vazia então o
@@ -44,21 +51,15 @@ public class Sintatico extends ASintatico {
 
 		if (listaTokens == null) {
 
-			finalizarPrograma("sintática");
+			finalizarPrograma("geração");
 
 			return;
 
 		}
 
-		TabelaDeSimbolos.getTabelaDeSimbolos().getListaDeSimbolos().clear();
+		//TabelaDeSimbolos.getTabelaDeSimbolos().getListaDeSimbolos().clear();
 
-		boolean dv = true;
-
-		while (dv) {
-
-			dv = declaraVar();
-
-		}
+		ex.codigoInt("_Principal:");
 
 		boolean dpf = true;
 
@@ -71,6 +72,8 @@ public class Sintatico extends ASintatico {
 		if (numeroErro == 0) {
 
 			if (comparaLexema(Tag.INICIO)) {
+
+				ex.codigoInt("_INICIO:");
 
 				consomeToken();
 
@@ -86,25 +89,11 @@ public class Sintatico extends ASintatico {
 
 					if (comparaLexema(Tag.FIM)) {
 
+						ex.codigoInt("_FIM:");
+
 						consomeToken();
 
-						finalizarPrograma("sintática");
-
-					} else if (comparaLexema(Tag.CONTINUE)
-							|| comparaLexema(Tag.PARE)) {
-
-						numeroErro++;
-
-						ex.excecao(
-								"Erro sintático: ",
-								listaTokens.get(indiceLista).getNomeDoToken()
-										+ " não está dentro do escopo de um laço depois do token "
-										+ listaTokens.get(indiceLista - 1)
-												.getNomeDoToken(), (listaTokens
-										.get(indiceLista - 1)
-										.getLinhaLocalizada()));
-
-						return;
+						finalizarPrograma("e geração de código");
 
 					} else {
 
@@ -125,7 +114,7 @@ public class Sintatico extends ASintatico {
 
 					numeroErro++;
 
-					ex.excecao("Erro sintático: Análise não aceita.");
+					ex.excecao("Erro de síntese: Análise não aceita.");
 
 					return;
 
@@ -194,6 +183,8 @@ public class Sintatico extends ASintatico {
 	 */
 	private void declaraProced() {
 
+		String dP = "";
+
 		Simbolo simboloProced = null;
 
 		if (comparaLexema(Tag.VOID)) {
@@ -206,11 +197,38 @@ public class Sintatico extends ASintatico {
 						.get(indiceLista).getNomeDoToken(), null,
 						"PROCEDIMENTO");
 
+				String id = listaTokens.get(indiceLista).getNomeDoToken();
+
 				consomeToken();
 
 				if (comparaLexema('(')) {
 
 					consomeToken();
+
+					int i = indiceLista;
+
+					int quantParametros = 0;
+
+					String param = "";
+
+					while (listaTokens.get(i).getTag() != ')') {
+
+						if (listaTokens.get(i).getTag() != ','
+								&& listaTokens.get(i).getTag() != Tag.BASICO) {
+
+							param = param + " param "
+									+ listaTokens.get(i).getNomeDoToken()
+									+ "\n";
+
+							quantParametros++;
+
+						}
+
+						i++;
+
+					}
+
+					ex.codigoInt(param + " " + id + ", " + quantParametros);
 
 					simboloProced.setListaParametros(listaDeParametros());
 
@@ -332,7 +350,7 @@ public class Sintatico extends ASintatico {
 
 		}
 
-		TabelaDeSimbolos.getTabelaDeSimbolos().inserirSimbolo(simboloProced);
+		//TabelaDeSimbolos.getTabelaDeSimbolos().inserirSimbolo(simboloProced);
 
 	}
 
@@ -357,11 +375,38 @@ public class Sintatico extends ASintatico {
 							indiceLista - 1).getNomeDoToken(), listaTokens.get(
 							indiceLista).getNomeDoToken(), null, "FUNCAO");
 
+					String id = listaTokens.get(indiceLista).getNomeDoToken();
+
 					consomeToken();
 
 					if (comparaLexema('(')) {
 
 						consomeToken();
+
+						int i = indiceLista;
+
+						int quantParametros = 0;
+
+						String param = "";
+
+						while (listaTokens.get(i).getTag() != ')') {
+
+							if (listaTokens.get(i).getTag() != ','
+									&& listaTokens.get(i).getTag() != Tag.BASICO) {
+
+								param = param + " param "
+										+ listaTokens.get(i).getNomeDoToken()
+										+ "\n";
+
+								quantParametros++;
+
+							}
+
+							i++;
+
+						}
+
+						ex.codigoInt(param + " " + id + ", " + quantParametros);
 
 						simboloFunc.setListaParametros(listaDeParametros());
 
@@ -597,7 +642,7 @@ public class Sintatico extends ASintatico {
 
 		}
 
-		TabelaDeSimbolos.getTabelaDeSimbolos().inserirSimbolo(simboloFunc);
+		//TabelaDeSimbolos.getTabelaDeSimbolos().inserirSimbolo(simboloFunc);
 
 	}
 
@@ -727,7 +772,7 @@ public class Sintatico extends ASintatico {
 						indiceLista - 1).getNomeDoToken(), listaTokens.get(
 						indiceLista).getNomeDoToken(), null, "PARAMETRO");
 
-				TabelaDeSimbolos.getTabelaDeSimbolos().inserirSimbolo(v);
+				//TabelaDeSimbolos.getTabelaDeSimbolos().inserirSimbolo(v);
 
 				consomeToken();
 
@@ -766,13 +811,17 @@ public class Sintatico extends ASintatico {
 	/*
 	 * Produção <valor>::=
 	 */
-	private void valor() {
+	private void valor(String end) {
 
 		if (comparaLexema(Tag.NUMERICO)) {
+
+			end = end + " " + listaTokens.get(indiceLista).toString();
 
 			consomeToken();
 
 		} else if (comparaLexema(Tag.VERDADEIRO) || comparaLexema(Tag.FALSO)) {
+
+			end = end + " " + listaTokens.get(indiceLista).getNomeDoToken();
 
 			consomeToken();
 
@@ -784,11 +833,36 @@ public class Sintatico extends ASintatico {
 
 				indiceLista--;
 
-				chamaFuncaoProced();
+				int i = indiceLista + 2;
+
+				int quantParametros = 0;
+
+				String param = "";
+
+				while (listaTokens.get(i).getTag() != ')') {
+
+					if (listaTokens.get(i).getTag() != ',') {
+
+						param = param + " param "
+								+ listaTokens.get(i).getNomeDoToken() + "\n";
+
+						quantParametros++;
+
+					}
+
+					i++;
+
+				}
+
+				String ret = chamaFuncaoProced();
+
+				end = param + end + ret;
 
 			} else {
 
 				indiceLista--;
+
+				end = end + " " + listaTokens.get(indiceLista).getNomeDoToken();
 
 				consomeToken();
 
@@ -797,6 +871,83 @@ public class Sintatico extends ASintatico {
 			// consomeToken();
 
 		} else if (comparaLexema('(')) {
+
+			/*
+			 * List<Token> lista1 = new ArrayList<Token>();
+			 * 
+			 * int i = indiceLista;
+			 * 
+			 * int quantElementos = 0;
+			 * 
+			 * while (listaTokens.get(i).getTag() != ';') {
+			 * 
+			 * if (listaTokens.get(i).getTag() != ')' &&
+			 * listaTokens.get(i).getTag() != '(') {
+			 * 
+			 * lista1.add(listaTokens.get(i));
+			 * 
+			 * System.out.println(lista1);
+			 * 
+			 * }
+			 * 
+			 * i++;
+			 * 
+			 * }
+			 * 
+			 * int j = 0;
+			 * 
+			 * String exp = "";
+			 * 
+			 * List<String> lista2 = new ArrayList<String>();
+			 * 
+			 * while (j < lista1.size() - 1) {
+			 * 
+			 * if (lista1.get(j).getTag() == Tag.IDENTIFICADOR ||
+			 * lista1.get(j).getNomeDoToken() == "NUMERICO") {
+			 * 
+			 * exp = "_t" + variavel + ": " + lista1.get(j).toString();
+			 * 
+			 * j++;
+			 * 
+			 * if (lista1.get(j).getTag() == '*' || lista1.get(j).getTag() ==
+			 * '+' || lista1.get(j).getTag() == '-' || lista1.get(j).getTag() ==
+			 * '/') {
+			 * 
+			 * exp = exp + " " + lista1.get(j).toString();
+			 * 
+			 * j++;
+			 * 
+			 * if (lista1.get(j).getTag() == Tag.IDENTIFICADOR ||
+			 * lista1.get(j).getNomeDoToken() == "NUMERICO") {
+			 * 
+			 * exp = exp + " " + lista1.get(j).toString() + "\n";
+			 * 
+			 * j++;
+			 * 
+			 * if (lista1.get(j).getTag() == '*' || lista1.get(j).getTag() ==
+			 * '+' || lista1.get(j).getTag() == '-' || lista1.get(j).getTag() ==
+			 * '/') {
+			 * 
+			 * exp = exp + " " + lista1.get(j).toString();
+			 * 
+			 * j++;
+			 * 
+			 * }
+			 * 
+			 * } }
+			 * 
+			 * }
+			 * 
+			 * variavel++;
+			 * 
+			 * lista2.add(exp);
+			 * 
+			 * end = exp + end;
+			 * 
+			 * j++;
+			 * 
+			 * }
+			 */
 
 			consomeToken();
 
@@ -839,6 +990,8 @@ public class Sintatico extends ASintatico {
 			return;
 
 		}
+
+		ex.codigoInt(end);
 
 	}
 
@@ -1291,7 +1444,13 @@ public class Sintatico extends ASintatico {
 
 	private void laco() {
 
+		String laco = "";
+
 		if (comparaLexema(Tag.ENQUANTO)) {
+
+			String l1 = label++ + "";
+
+			laco = " _L" + l1 + ": " + "SE";
 
 			consomeToken();
 
@@ -1299,7 +1458,17 @@ public class Sintatico extends ASintatico {
 
 				consomeToken();
 
-				condicao();
+				String r1 = condicao();
+
+				String l2 = "";
+
+				l2 = "_L" + label;
+
+				laco = laco + " " + r1 + " goto " + l2;
+
+				++label;
+
+				ex.codigoInt(laco);
 
 				if (numeroErro == 0) {
 
@@ -1315,11 +1484,17 @@ public class Sintatico extends ASintatico {
 
 							while (esc) {
 
-								esc = escopo();
+								esc = escopo(l2);
 
 							}
 
 							if (numeroErro == 0) {
+
+								ex.codigoInt("goto _L" + l1);
+
+								ex.codigoInt(l2 + ":");
+
+								++label;
 
 								if (comparaLexema('}')) {
 
@@ -1403,13 +1578,13 @@ public class Sintatico extends ASintatico {
 		}
 	}
 
-	private boolean escopo() {
+	private boolean escopo(String l2) {
 
 		boolean e = true;
 
 		if (comparaLexema(Tag.SE)) {
 
-			e = condicionalEspecial();
+			e = condicionalEspecial(l2);
 
 		} else {
 
@@ -1420,11 +1595,16 @@ public class Sintatico extends ASintatico {
 		return e;
 	}
 
-	private boolean condicionalEspecial() {
+	private boolean condicionalEspecial(String l2) {
+
+		String condEsp = "";
 
 		boolean c = true;
 
 		if (comparaLexema(Tag.SE)) {
+
+			condEsp = "_L" + label++ + ": "
+					+ listaTokens.get(indiceLista).getNomeDoToken();
 
 			consomeToken();
 
@@ -1432,7 +1612,11 @@ public class Sintatico extends ASintatico {
 
 				consomeToken();
 
-				condicao();
+				String r1 = condicao();
+
+				condEsp = condEsp + " " + r1 + " goto " + "_L" + label;
+
+				ex.codigoInt(condEsp);
 
 				if (numeroErro == 0) {
 
@@ -1448,38 +1632,44 @@ public class Sintatico extends ASintatico {
 
 							while (esc) {
 
-								esc = escopo();
+								esc = escopo("");
 
 							}
 
 							if (numeroErro == 0) {
 
-								if (comparaLexema(Tag.PARE)
-										|| comparaLexema(Tag.CONTINUE)) {
+								if (comparaLexema(Tag.PARE)) {
+
+									ex.codigoInt("goto " + l2);
 
 									consomeToken();
 
-									if (comparaLexema(';')) {
+								} else if (comparaLexema(Tag.CONTINUE)) {
 
-										consomeToken();
+									consomeToken();
 
-									} else {
+								} else {
 
-										numeroErro++;
+								}
 
-										ex.excecao(
-												"Erro sintático: ",
-												"Era esperado o simbolo ; depois do token "
-														+ listaTokens
-																.get(indiceLista - 1)
-																.getNomeDoToken(),
-												(listaTokens
-														.get(indiceLista - 1)
-														.getLinhaLocalizada()));
+								if (comparaLexema(';')) {
 
-										c = false;
+									consomeToken();
 
-									}
+								} else {
+
+									numeroErro++;
+
+									ex.excecao(
+											"Erro sintático: ",
+											"Era esperado o simbolo ; depois do token "
+													+ listaTokens.get(
+															indiceLista - 1)
+															.getNomeDoToken(),
+											(listaTokens.get(indiceLista - 1)
+													.getLinhaLocalizada()));
+
+									c = false;
 
 								}
 
@@ -1565,7 +1755,13 @@ public class Sintatico extends ASintatico {
 
 	private void senaoEspecial() {
 
+		String senaoEsp = "";
+
 		if (comparaLexema(Tag.SENAO)) {
+
+			senaoEsp = "_L" + label + ":";
+
+			ex.codigoInt(senaoEsp);
 
 			consomeToken();
 
@@ -1634,7 +1830,7 @@ public class Sintatico extends ASintatico {
 
 			} else if (comparaLexema(Tag.SE)) {
 
-				condicionalEspecial();
+				condicionalEspecial("");
 
 			} else {
 
@@ -1658,11 +1854,9 @@ public class Sintatico extends ASintatico {
 
 	}
 
-	private boolean declaraVar() {
+	private void declaraVar() {
 
 		Simbolo simboloVariavel = null;
-
-		boolean b = true;
 
 		if (comparaLexema(Tag.BASICO)) {
 
@@ -1674,8 +1868,7 @@ public class Sintatico extends ASintatico {
 						indiceLista - 1).getNomeDoToken(), listaTokens.get(
 						indiceLista).getNomeDoToken(), null, "VARIAVEL");
 
-				TabelaDeSimbolos.getTabelaDeSimbolos().inserirSimbolo(
-						simboloVariavel);
+				//TabelaDeSimbolos.getTabelaDeSimbolos().inserirSimbolo(simboloVariavel);
 
 				consomeToken();
 
@@ -1693,7 +1886,7 @@ public class Sintatico extends ASintatico {
 											.getNomeDoToken(), (listaTokens
 									.get(indiceLista - 1).getLinhaLocalizada()));
 
-					b = false;
+					return;
 
 				}
 
@@ -1707,21 +1900,21 @@ public class Sintatico extends ASintatico {
 										.getNomeDoToken(),
 						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
 
-				b = false;
+				return;
 
 			}
 
 		} else {
 
-			b = false;
+			return;
 
 		}
-
-		return b;
 
 	}
 
 	private void atribuirChamarFuncProced() {
+
+		String cfp = "";
 
 		if (comparaLexema(Tag.IDENTIFICADOR)) {
 
@@ -1731,7 +1924,30 @@ public class Sintatico extends ASintatico {
 
 				indiceLista--;
 
-				chamaFuncaoProced();
+				int i = indiceLista + 2;
+
+				int quantParametros = 0;
+
+				String param = "";
+
+				while (listaTokens.get(i).getTag() != ')') {
+
+					if (listaTokens.get(i).getTag() != ',') {
+
+						param = param + " param "
+								+ listaTokens.get(i).getNomeDoToken() + "\n";
+
+						quantParametros++;
+
+					}
+
+					i++;
+
+				}
+
+				cfp = chamaFuncaoProced();
+
+				ex.codigoInt(param + cfp);
 
 			} else if (comparaLexema(Tag.ATRIBUICAO)) {
 
@@ -1759,15 +1975,39 @@ public class Sintatico extends ASintatico {
 
 	}
 
-	private void chamaFuncaoProced() {
+	private String chamaFuncaoProced() {
+
+		String cfp = "";
 
 		if (comparaLexema(Tag.IDENTIFICADOR)) {
+
+			String id = listaTokens.get(indiceLista).getNomeDoToken();
 
 			consomeToken();
 
 			if (comparaLexema('(')) {
 
 				consomeToken();
+
+				int i = indiceLista;
+
+				int quantParametros = 0;
+
+				while (listaTokens.get(i).getTag() != ')') {
+
+					if (listaTokens.get(i).getTag() != ',') {
+
+						quantParametros++;
+
+					}
+
+					i++;
+
+				}
+
+				cfp = " call" + " " + id;
+
+				cfp = cfp + ", " + quantParametros;
 
 				listaArgumentos();
 
@@ -1792,7 +2032,7 @@ public class Sintatico extends ASintatico {
 						 * (listaTokens.get(indiceLista - 1)
 						 * .getLinhaLocalizada()));
 						 * 
-						 * return;
+						 * return null;
 						 * 
 						 * }
 						 */
@@ -1808,7 +2048,7 @@ public class Sintatico extends ASintatico {
 										.get(indiceLista - 1)
 										.getLinhaLocalizada()));
 
-						return;
+						return null;
 
 					}
 
@@ -1816,7 +2056,7 @@ public class Sintatico extends ASintatico {
 
 					numeroErro++;
 
-					return;
+					return null;
 
 				}
 
@@ -1825,6 +2065,8 @@ public class Sintatico extends ASintatico {
 		} else {
 
 		}
+
+		return cfp;
 
 	}
 
@@ -1918,15 +2160,21 @@ public class Sintatico extends ASintatico {
 
 	private void atribuicao() {
 
+		String end = "";
+
 		if (comparaLexema(Tag.IDENTIFICADOR)) {
+
+			end = end + " " + listaTokens.get(indiceLista).getNomeDoToken();
 
 			consomeToken();
 
 			if (comparaLexema(Tag.ATRIBUICAO)) {
 
+				end = end + " " + ":=";
+
 				consomeToken();
 
-				valor();
+				valor(end);
 
 				if (numeroErro == 0) {
 
@@ -1977,7 +2225,12 @@ public class Sintatico extends ASintatico {
 
 	private void condicional() {
 
+		String cond = "";
+
 		if (comparaLexema(Tag.SE)) {
+
+			cond = " _L" + label++ + ": "
+					+ listaTokens.get(indiceLista).getNomeDoToken();
 
 			consomeToken();
 
@@ -1985,7 +2238,11 @@ public class Sintatico extends ASintatico {
 
 				consomeToken();
 
-				condicao();
+				String r1 = condicao();
+
+				cond = cond + " " + r1 + " goto " + "_L" + label;
+
+				ex.codigoInt(cond);
 
 				if (numeroErro == 0) {
 
@@ -2088,19 +2345,25 @@ public class Sintatico extends ASintatico {
 
 	}
 
-	private void condicao() {
+	private String condicao() {
+
+		String cond = "";
 
 		if (comparaLexema(Tag.VERDADEIRO) || comparaLexema(Tag.FALSO)) {
+
+			cond = listaTokens.get(indiceLista).getNomeDoToken();
 
 			consomeToken();
 
 		} else if (comparaLexema(Tag.IDENTIFICADOR)) {
 
+			cond = listaTokens.get(indiceLista).getNomeDoToken();
+
 			consomeToken();
 
 		} else if (comparaLexema('(')) {
 
-			expressaoLogica();
+			cond = expressaoLogica();
 
 			if (numeroErro == 0) {
 
@@ -2114,7 +2377,7 @@ public class Sintatico extends ASintatico {
 										.getNomeDoToken(),
 						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
 
-				return;
+				return null;
 
 			}
 
@@ -2128,19 +2391,27 @@ public class Sintatico extends ASintatico {
 							+ listaTokens.get(indiceLista - 1).getNomeDoToken(),
 					(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
 
-			return;
+			return null;
 
 		}
+
+		return cond;
 
 	}
 
 	private void senao() {
+
+		String senao = "";
 
 		if (comparaLexema(Tag.SENAO)) {
 
 			consomeToken();
 
 			if (comparaLexema('{')) {
+
+				senao = "_L" + label + ":";
+
+				ex.codigoInt(senao);
 
 				consomeToken();
 
@@ -2205,7 +2476,9 @@ public class Sintatico extends ASintatico {
 
 	}
 
-	private void expressaoLogica() {
+	private String expressaoLogica() {
+
+		String cond = "";
 
 		if (comparaLexema('(')) {
 
@@ -2213,54 +2486,45 @@ public class Sintatico extends ASintatico {
 
 			if (comparaLexema(Tag.NUMERICO) || comparaLexema(Tag.IDENTIFICADOR)) {
 
+				cond = cond + listaTokens.get(indiceLista).getNomeDoToken();
+
 				consomeToken();
 
-				if (comparaLexema(Tag.MENOR_Q) || comparaLexema(Tag.MAIOR_Q)
-						|| comparaLexema(Tag.MENOR_IGUAL)
-						|| comparaLexema(Tag.MAIOR_IGUAL)
-						|| comparaLexema(Tag.IGUAL)
-						|| comparaLexema(Tag.DIFERENTE)) {
+				if (comparaLexema(Tag.MENOR_Q)) {
+
+					cond = cond + " > ";
 
 					consomeToken();
 
-					if (comparaLexema(Tag.NUMERICO)
-							|| comparaLexema(Tag.IDENTIFICADOR)) {
+				} else if (comparaLexema(Tag.MAIOR_Q)) {
 
-						consomeToken();
+					cond = cond + " < ";
 
-						if (comparaLexema(')')) {
+					consomeToken();
 
-							consomeToken();
+				} else if (comparaLexema(Tag.MENOR_IGUAL)) {
 
-						} else {
+					cond = cond + " >= ";
 
-							numeroErro++;
+					consomeToken();
 
-							ex.excecao("Erro sintático: ",
-									"Era esperado um ) depois do token "
-											+ listaTokens.get(indiceLista - 1)
-													.getNomeDoToken(),
-									(listaTokens.get(indiceLista - 1)
-											.getLinhaLocalizada()));
+				} else if (comparaLexema(Tag.MAIOR_IGUAL)) {
 
-							return;
+					cond = cond + " <= ";
 
-						}
+					consomeToken();
 
-					} else {
+				} else if (comparaLexema(Tag.IGUAL)) {
 
-						numeroErro++;
+					cond = cond + " != ";
 
-						ex.excecao("Erro sintático: ",
-								"Era esperado um valor numerico ou identificador depois do token "
-										+ listaTokens.get(indiceLista - 1)
-												.getNomeDoToken(), (listaTokens
-										.get(indiceLista - 1)
-										.getLinhaLocalizada()));
+					consomeToken();
 
-						return;
+				} else if (comparaLexema(Tag.DIFERENTE)) {
 
-					}
+					cond = cond + " == ";
+
+					consomeToken();
 
 				} else {
 
@@ -2272,7 +2536,47 @@ public class Sintatico extends ASintatico {
 											.getNomeDoToken(), (listaTokens
 									.get(indiceLista - 1).getLinhaLocalizada()));
 
-					return;
+					return null;
+
+				}
+
+				if (comparaLexema(Tag.NUMERICO)
+						|| comparaLexema(Tag.IDENTIFICADOR)) {
+
+					cond = cond + listaTokens.get(indiceLista).getNomeDoToken();
+
+					consomeToken();
+
+					if (comparaLexema(')')) {
+
+						consomeToken();
+
+					} else {
+
+						numeroErro++;
+
+						ex.excecao("Erro sintático: ",
+								"Era esperado um ) depois do token "
+										+ listaTokens.get(indiceLista - 1)
+												.getNomeDoToken(), (listaTokens
+										.get(indiceLista - 1)
+										.getLinhaLocalizada()));
+
+						return null;
+
+					}
+
+				} else {
+
+					numeroErro++;
+
+					ex.excecao("Erro sintático: ",
+							"Era esperado um valor numerico ou identificador depois do token "
+									+ listaTokens.get(indiceLista - 1)
+											.getNomeDoToken(), (listaTokens
+									.get(indiceLista - 1).getLinhaLocalizada()));
+
+					return null;
 
 				}
 
@@ -2286,7 +2590,7 @@ public class Sintatico extends ASintatico {
 										.getNomeDoToken(),
 						(listaTokens.get(indiceLista - 1).getLinhaLocalizada()));
 
-				return;
+				return null;
 
 			}
 
@@ -2294,6 +2598,9 @@ public class Sintatico extends ASintatico {
 
 		}
 
+		return cond;
+
 	}
 
 }// public class Sintatico{}
+

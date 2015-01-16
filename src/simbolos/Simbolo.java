@@ -8,6 +8,11 @@ public class Simbolo {
 	 * Escopo do identificador.
 	 */
 	private int escopo;
+	
+	/*
+	 * Valor do identificador.
+	 */
+	private String valor = null;
 
 	/*
 	 * Tipo da variável, INTEIRO ou BOOLEANO
@@ -65,18 +70,20 @@ public class Simbolo {
 		return s;
 	}
 
-	@Override
-	public String toString(){
-		
-		return this.lexema;
-	}
-
 	public int getEscopo() {
 		return escopo;
 	}
 
 	public void setEscopo(int escopo) {
 		this.escopo = escopo;
+	}
+
+	public String getValor() {
+		return valor;
+	}
+
+	public void setValor(String valor) {
+		this.valor = valor;
 	}
 
 	public String getTipo() {
@@ -131,6 +138,7 @@ public class Simbolo {
 		result = prime * result + ((tipo == null) ? 0 : tipo.hashCode());
 		result = prime * result
 				+ ((tipoRetorno == null) ? 0 : tipoRetorno.hashCode());
+		result = prime * result + ((valor == null) ? 0 : valor.hashCode());
 		return result;
 	}
 
@@ -170,7 +178,11 @@ public class Simbolo {
 				return false;
 		} else if (!tipoRetorno.equals(other.tipoRetorno))
 			return false;
+		if (valor == null) {
+			if (other.valor != null)
+				return false;
+		} else if (!valor.equals(other.valor))
+			return false;
 		return true;
 	}
-
 }
